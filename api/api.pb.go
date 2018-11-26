@@ -55,20 +55,86 @@ func (DEVICE) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_1b40cafcd4234784, []int{0}
 }
 
+type Status struct {
+	Loc                  *Coordinates    `protobuf:"bytes,1,opt,name=loc,proto3" json:"loc,omitempty"`
+	ActiveDetectors      []DEVICE        `protobuf:"varint,2,rep,packed,name=active_detectors,json=activeDetectors,proto3,enum=api.DEVICE" json:"active_detectors,omitempty"`
+	BatteryVoltage       float64         `protobuf:"fixed64,3,opt,name=battery_voltage,json=batteryVoltage,proto3" json:"battery_voltage,omitempty"`
+	DetectionCount       map[int32]int64 `protobuf:"bytes,4,rep,name=detection_count,json=detectionCount,proto3" json:"detection_count,omitempty" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
+	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
+	XXX_unrecognized     []byte          `json:"-"`
+	XXX_sizecache        int32           `json:"-"`
+}
+
+func (m *Status) Reset()         { *m = Status{} }
+func (m *Status) String() string { return proto.CompactTextString(m) }
+func (*Status) ProtoMessage()    {}
+func (*Status) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1b40cafcd4234784, []int{0}
+}
+
+func (m *Status) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Status.Unmarshal(m, b)
+}
+func (m *Status) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Status.Marshal(b, m, deterministic)
+}
+func (m *Status) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Status.Merge(m, src)
+}
+func (m *Status) XXX_Size() int {
+	return xxx_messageInfo_Status.Size(m)
+}
+func (m *Status) XXX_DiscardUnknown() {
+	xxx_messageInfo_Status.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Status proto.InternalMessageInfo
+
+func (m *Status) GetLoc() *Coordinates {
+	if m != nil {
+		return m.Loc
+	}
+	return nil
+}
+
+func (m *Status) GetActiveDetectors() []DEVICE {
+	if m != nil {
+		return m.ActiveDetectors
+	}
+	return nil
+}
+
+func (m *Status) GetBatteryVoltage() float64 {
+	if m != nil {
+		return m.BatteryVoltage
+	}
+	return 0
+}
+
+func (m *Status) GetDetectionCount() map[int32]int64 {
+	if m != nil {
+		return m.DetectionCount
+	}
+	return nil
+}
+
 type DetectionEvent struct {
-	DeviceId             string                 `protobuf:"bytes,1,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`
-	Type                 DEVICE                 `protobuf:"varint,2,opt,name=type,proto3,enum=api.DEVICE" json:"type,omitempty"`
-	Time                 []*timestamp.Timestamp `protobuf:"bytes,3,rep,name=time,proto3" json:"time,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}               `json:"-"`
-	XXX_unrecognized     []byte                 `json:"-"`
-	XXX_sizecache        int32                  `json:"-"`
+	Time []*timestamp.Timestamp `protobuf:"bytes,1,rep,name=time,proto3" json:"time,omitempty"`
+	// Types that are valid to be assigned to DeviceId:
+	//	*DetectionEvent_WifiMac
+	//	*DetectionEvent_BluetoothMac
+	//	*DetectionEvent_MobileImei
+	DeviceId             isDetectionEvent_DeviceId `protobuf_oneof:"device_id"`
+	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
+	XXX_unrecognized     []byte                    `json:"-"`
+	XXX_sizecache        int32                     `json:"-"`
 }
 
 func (m *DetectionEvent) Reset()         { *m = DetectionEvent{} }
 func (m *DetectionEvent) String() string { return proto.CompactTextString(m) }
 func (*DetectionEvent) ProtoMessage()    {}
 func (*DetectionEvent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1b40cafcd4234784, []int{0}
+	return fileDescriptor_1b40cafcd4234784, []int{1}
 }
 
 func (m *DetectionEvent) XXX_Unmarshal(b []byte) error {
@@ -89,25 +155,142 @@ func (m *DetectionEvent) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_DetectionEvent proto.InternalMessageInfo
 
-func (m *DetectionEvent) GetDeviceId() string {
-	if m != nil {
-		return m.DeviceId
-	}
-	return ""
-}
-
-func (m *DetectionEvent) GetType() DEVICE {
-	if m != nil {
-		return m.Type
-	}
-	return DEVICE_DEVICE_UNKNOWN
-}
-
 func (m *DetectionEvent) GetTime() []*timestamp.Timestamp {
 	if m != nil {
 		return m.Time
 	}
 	return nil
+}
+
+type isDetectionEvent_DeviceId interface {
+	isDetectionEvent_DeviceId()
+}
+
+type DetectionEvent_WifiMac struct {
+	WifiMac string `protobuf:"bytes,2,opt,name=wifi_mac,json=wifiMac,proto3,oneof"`
+}
+
+type DetectionEvent_BluetoothMac struct {
+	BluetoothMac string `protobuf:"bytes,3,opt,name=bluetooth_mac,json=bluetoothMac,proto3,oneof"`
+}
+
+type DetectionEvent_MobileImei struct {
+	MobileImei string `protobuf:"bytes,4,opt,name=mobile_imei,json=mobileImei,proto3,oneof"`
+}
+
+func (*DetectionEvent_WifiMac) isDetectionEvent_DeviceId() {}
+
+func (*DetectionEvent_BluetoothMac) isDetectionEvent_DeviceId() {}
+
+func (*DetectionEvent_MobileImei) isDetectionEvent_DeviceId() {}
+
+func (m *DetectionEvent) GetDeviceId() isDetectionEvent_DeviceId {
+	if m != nil {
+		return m.DeviceId
+	}
+	return nil
+}
+
+func (m *DetectionEvent) GetWifiMac() string {
+	if x, ok := m.GetDeviceId().(*DetectionEvent_WifiMac); ok {
+		return x.WifiMac
+	}
+	return ""
+}
+
+func (m *DetectionEvent) GetBluetoothMac() string {
+	if x, ok := m.GetDeviceId().(*DetectionEvent_BluetoothMac); ok {
+		return x.BluetoothMac
+	}
+	return ""
+}
+
+func (m *DetectionEvent) GetMobileImei() string {
+	if x, ok := m.GetDeviceId().(*DetectionEvent_MobileImei); ok {
+		return x.MobileImei
+	}
+	return ""
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*DetectionEvent) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _DetectionEvent_OneofMarshaler, _DetectionEvent_OneofUnmarshaler, _DetectionEvent_OneofSizer, []interface{}{
+		(*DetectionEvent_WifiMac)(nil),
+		(*DetectionEvent_BluetoothMac)(nil),
+		(*DetectionEvent_MobileImei)(nil),
+	}
+}
+
+func _DetectionEvent_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*DetectionEvent)
+	// device_id
+	switch x := m.DeviceId.(type) {
+	case *DetectionEvent_WifiMac:
+		b.EncodeVarint(2<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.WifiMac)
+	case *DetectionEvent_BluetoothMac:
+		b.EncodeVarint(3<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.BluetoothMac)
+	case *DetectionEvent_MobileImei:
+		b.EncodeVarint(4<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.MobileImei)
+	case nil:
+	default:
+		return fmt.Errorf("DetectionEvent.DeviceId has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _DetectionEvent_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*DetectionEvent)
+	switch tag {
+	case 2: // device_id.wifi_mac
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.DeviceId = &DetectionEvent_WifiMac{x}
+		return true, err
+	case 3: // device_id.bluetooth_mac
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.DeviceId = &DetectionEvent_BluetoothMac{x}
+		return true, err
+	case 4: // device_id.mobile_imei
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.DeviceId = &DetectionEvent_MobileImei{x}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+func _DetectionEvent_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*DetectionEvent)
+	// device_id
+	switch x := m.DeviceId.(type) {
+	case *DetectionEvent_WifiMac:
+		n += 1 // tag and wire
+		n += proto.SizeVarint(uint64(len(x.WifiMac)))
+		n += len(x.WifiMac)
+	case *DetectionEvent_BluetoothMac:
+		n += 1 // tag and wire
+		n += proto.SizeVarint(uint64(len(x.BluetoothMac)))
+		n += len(x.BluetoothMac)
+	case *DetectionEvent_MobileImei:
+		n += 1 // tag and wire
+		n += proto.SizeVarint(uint64(len(x.MobileImei)))
+		n += len(x.MobileImei)
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
 }
 
 type Coordinates struct {
@@ -123,7 +306,7 @@ func (m *Coordinates) Reset()         { *m = Coordinates{} }
 func (m *Coordinates) String() string { return proto.CompactTextString(m) }
 func (*Coordinates) ProtoMessage()    {}
 func (*Coordinates) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1b40cafcd4234784, []int{1}
+	return fileDescriptor_1b40cafcd4234784, []int{2}
 }
 
 func (m *Coordinates) XXX_Unmarshal(b []byte) error {
@@ -178,7 +361,7 @@ func (m *EventLog) Reset()         { *m = EventLog{} }
 func (m *EventLog) String() string { return proto.CompactTextString(m) }
 func (*EventLog) ProtoMessage()    {}
 func (*EventLog) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1b40cafcd4234784, []int{2}
+	return fileDescriptor_1b40cafcd4234784, []int{3}
 }
 
 func (m *EventLog) XXX_Unmarshal(b []byte) error {
@@ -220,41 +403,116 @@ func (m *EventLog) GetEvents() []*DetectionEvent {
 	return nil
 }
 
+type SendStreamResponse struct {
+	Mobile               int64    `protobuf:"varint,1,opt,name=Mobile,proto3" json:"Mobile,omitempty"`
+	Bluetooth            int64    `protobuf:"varint,2,opt,name=Bluetooth,proto3" json:"Bluetooth,omitempty"`
+	WIFI                 int64    `protobuf:"varint,3,opt,name=WIFI,proto3" json:"WIFI,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SendStreamResponse) Reset()         { *m = SendStreamResponse{} }
+func (m *SendStreamResponse) String() string { return proto.CompactTextString(m) }
+func (*SendStreamResponse) ProtoMessage()    {}
+func (*SendStreamResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1b40cafcd4234784, []int{4}
+}
+
+func (m *SendStreamResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SendStreamResponse.Unmarshal(m, b)
+}
+func (m *SendStreamResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SendStreamResponse.Marshal(b, m, deterministic)
+}
+func (m *SendStreamResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SendStreamResponse.Merge(m, src)
+}
+func (m *SendStreamResponse) XXX_Size() int {
+	return xxx_messageInfo_SendStreamResponse.Size(m)
+}
+func (m *SendStreamResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_SendStreamResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SendStreamResponse proto.InternalMessageInfo
+
+func (m *SendStreamResponse) GetMobile() int64 {
+	if m != nil {
+		return m.Mobile
+	}
+	return 0
+}
+
+func (m *SendStreamResponse) GetBluetooth() int64 {
+	if m != nil {
+		return m.Bluetooth
+	}
+	return 0
+}
+
+func (m *SendStreamResponse) GetWIFI() int64 {
+	if m != nil {
+		return m.WIFI
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterEnum("api.DEVICE", DEVICE_name, DEVICE_value)
+	proto.RegisterType((*Status)(nil), "api.Status")
+	proto.RegisterMapType((map[int32]int64)(nil), "api.Status.DetectionCountEntry")
 	proto.RegisterType((*DetectionEvent)(nil), "api.DetectionEvent")
 	proto.RegisterType((*Coordinates)(nil), "api.Coordinates")
 	proto.RegisterType((*EventLog)(nil), "api.EventLog")
+	proto.RegisterType((*SendStreamResponse)(nil), "api.SendStreamResponse")
 }
 
 func init() { proto.RegisterFile("api/api.proto", fileDescriptor_1b40cafcd4234784) }
 
 var fileDescriptor_1b40cafcd4234784 = []byte{
-	// 374 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x64, 0x51, 0x5d, 0xcb, 0x9b, 0x30,
-	0x18, 0x9d, 0xaf, 0x22, 0xfa, 0x48, 0x8b, 0x3c, 0x1b, 0x43, 0x7c, 0x07, 0x2d, 0x5e, 0x95, 0x8d,
-	0x59, 0x70, 0xbf, 0xa0, 0x1f, 0x8e, 0xc9, 0xba, 0x0a, 0xb6, 0x5d, 0x2f, 0x76, 0x51, 0x6c, 0x93,
-	0x49, 0x40, 0x8d, 0xd8, 0xb4, 0x50, 0x18, 0xfb, 0xed, 0xc3, 0xa4, 0xae, 0xfb, 0xb8, 0x4b, 0xce,
-	0x39, 0xe4, 0x7c, 0x04, 0x06, 0x79, 0xc3, 0xa6, 0x79, 0xc3, 0xc2, 0xa6, 0xe5, 0x82, 0xa3, 0x9e,
-	0x37, 0xcc, 0x1f, 0x15, 0x9c, 0x17, 0x25, 0x9d, 0x4a, 0xe8, 0x78, 0xf9, 0x3e, 0x15, 0xac, 0xa2,
-	0x67, 0x91, 0x57, 0x8d, 0x52, 0xf9, 0xcf, 0xff, 0x0a, 0x68, 0xd5, 0x88, 0x9b, 0x22, 0x83, 0x9f,
-	0x30, 0x5c, 0x52, 0x41, 0x4f, 0x82, 0xf1, 0x3a, 0xbe, 0xd2, 0x5a, 0xe0, 0x33, 0xd8, 0x84, 0x5e,
-	0xd9, 0x89, 0x1e, 0x18, 0xf1, 0xb4, 0xb1, 0x36, 0xb1, 0x33, 0x4b, 0x01, 0x09, 0xc1, 0x11, 0x18,
-	0xe2, 0xd6, 0x50, 0xef, 0x69, 0xac, 0x4d, 0x86, 0x91, 0x13, 0x76, 0x59, 0x96, 0xf1, 0xd7, 0x64,
-	0x11, 0x67, 0x92, 0xc0, 0x10, 0x8c, 0xce, 0xdf, 0xd3, 0xc7, 0xfa, 0xc4, 0x89, 0xfc, 0x50, 0x79,
-	0x87, 0xbd, 0x77, 0xb8, 0xed, 0xc3, 0x65, 0x52, 0x17, 0x7c, 0x03, 0x67, 0xc1, 0x79, 0x4b, 0x58,
-	0x9d, 0x0b, 0x7a, 0x46, 0x04, 0xa3, 0xce, 0x2b, 0x7a, 0xf7, 0x95, 0x67, 0xf4, 0xc1, 0x2a, 0x73,
-	0xc1, 0xc4, 0x85, 0x28, 0x5f, 0x2d, 0xfb, 0x7d, 0xc7, 0x37, 0x60, 0x97, 0xbc, 0x2e, 0x14, 0xa9,
-	0x4b, 0xf2, 0x01, 0x04, 0x3f, 0xc0, 0x92, 0x9d, 0x56, 0xbc, 0xc0, 0x11, 0x38, 0x44, 0x16, 0xe5,
-	0xed, 0xa3, 0x18, 0xf4, 0x50, 0x42, 0x30, 0x00, 0xbd, 0xe4, 0x27, 0xe9, 0xe0, 0x44, 0xae, 0x6c,
-	0xf6, 0x47, 0xb2, 0xac, 0x23, 0xf1, 0x1d, 0x98, 0xb4, 0x7b, 0xf0, 0xec, 0xbd, 0x92, 0xfd, 0x5e,
-	0xaa, 0x01, 0xfe, 0x1a, 0x30, 0xbb, 0x4b, 0xde, 0xce, 0xc0, 0x54, 0xd3, 0x20, 0xc2, 0x50, 0x9d,
-	0x0e, 0xbb, 0xf5, 0xe7, 0x75, 0xba, 0x5f, 0xbb, 0x2f, 0x10, 0xc0, 0xfc, 0x92, 0xce, 0x93, 0x55,
-	0xec, 0x6a, 0x68, 0x81, 0xb1, 0x4f, 0x3e, 0x26, 0xee, 0x13, 0x0e, 0xc0, 0x9e, 0xaf, 0x76, 0xf1,
-	0x36, 0x4d, 0xb7, 0x9f, 0x5c, 0x3d, 0x9a, 0x81, 0xbb, 0xe0, 0x65, 0x29, 0x23, 0x6e, 0x68, 0xdb,
-	0x7d, 0x02, 0xbe, 0x07, 0x63, 0x43, 0x6b, 0x82, 0x03, 0xe9, 0xdd, 0xf7, 0xf3, 0x5f, 0xff, 0x37,
-	0x75, 0xdc, 0x7d, 0xf3, 0xd1, 0x94, 0xf7, 0x0f, 0xbf, 0x02, 0x00, 0x00, 0xff, 0xff, 0xf2, 0x45,
-	0xd3, 0x7c, 0x3b, 0x02, 0x00, 0x00,
+	// 651 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x54, 0xdd, 0x6a, 0xdb, 0x4a,
+	0x10, 0x8e, 0x2c, 0xc7, 0xc7, 0x1e, 0xc5, 0x8e, 0x98, 0x84, 0x1c, 0xe1, 0x1c, 0x88, 0x8f, 0xe1,
+	0x70, 0x4c, 0x4b, 0x1d, 0x70, 0xa0, 0x94, 0xd0, 0x9b, 0xd8, 0x71, 0x89, 0x69, 0x12, 0x97, 0x75,
+	0x7e, 0x2e, 0x0a, 0x15, 0x6b, 0x6b, 0xe3, 0x2e, 0x95, 0xb4, 0x42, 0x5a, 0xbb, 0x18, 0xfa, 0x24,
+	0x7d, 0x8e, 0x3e, 0x58, 0x1f, 0xa1, 0xec, 0xae, 0x94, 0x9f, 0x26, 0xe9, 0xdd, 0xcc, 0xb7, 0xdf,
+	0xcc, 0xce, 0x7c, 0x33, 0xbb, 0x50, 0xa7, 0x09, 0xdf, 0xa7, 0x09, 0xef, 0x26, 0xa9, 0x90, 0x02,
+	0x6d, 0x9a, 0xf0, 0xe6, 0xde, 0x5c, 0x88, 0x79, 0xc8, 0xf6, 0x35, 0x34, 0x5d, 0xdc, 0xec, 0x4b,
+	0x1e, 0xb1, 0x4c, 0xd2, 0x28, 0x31, 0xac, 0xe6, 0xee, 0xef, 0x04, 0x16, 0x25, 0x72, 0x65, 0x0e,
+	0xdb, 0xdf, 0x4b, 0x50, 0x99, 0x48, 0x2a, 0x17, 0x19, 0xb6, 0xc1, 0x0e, 0xc5, 0xcc, 0xb3, 0x5a,
+	0x56, 0xc7, 0xe9, 0xb9, 0x5d, 0x75, 0xcd, 0x40, 0x88, 0x34, 0xe0, 0x31, 0x95, 0x2c, 0x23, 0xea,
+	0x10, 0x5f, 0x83, 0x4b, 0x67, 0x92, 0x2f, 0x99, 0x1f, 0x30, 0xc9, 0x66, 0x52, 0xa4, 0x99, 0x57,
+	0x6a, 0xd9, 0x9d, 0x46, 0xcf, 0xd1, 0x01, 0xc7, 0xc3, 0xab, 0xd1, 0x60, 0x48, 0x36, 0x0d, 0xe9,
+	0xb8, 0xe0, 0xe0, 0xff, 0xb0, 0x39, 0xa5, 0x52, 0xb2, 0x74, 0xe5, 0x2f, 0x45, 0x28, 0xe9, 0x9c,
+	0x79, 0x76, 0xcb, 0xea, 0x58, 0xa4, 0x91, 0xc3, 0x57, 0x06, 0xc5, 0x13, 0xd8, 0x34, 0x99, 0xb9,
+	0x88, 0xfd, 0x99, 0x58, 0xc4, 0xd2, 0x2b, 0xb7, 0xec, 0x8e, 0xd3, 0xdb, 0xd3, 0xf9, 0x4d, 0xa9,
+	0xdd, 0xe3, 0x82, 0x32, 0x50, 0x8c, 0x61, 0x2c, 0xd3, 0x15, 0x69, 0x04, 0x0f, 0xc0, 0xe6, 0x11,
+	0x6c, 0x3d, 0x41, 0x43, 0x17, 0xec, 0x2f, 0x6c, 0xa5, 0xbb, 0x5c, 0x27, 0xca, 0xc4, 0x6d, 0x58,
+	0x5f, 0xd2, 0x70, 0xc1, 0xbc, 0x52, 0xcb, 0xea, 0xd8, 0xc4, 0x38, 0x87, 0xa5, 0x37, 0x56, 0xfb,
+	0x87, 0x05, 0x8d, 0xdb, 0x1c, 0xc3, 0x25, 0x8b, 0x25, 0x76, 0xa1, 0xac, 0xf4, 0xf5, 0x2c, 0x5d,
+	0x54, 0xb3, 0x6b, 0xb4, 0xed, 0x16, 0xda, 0x76, 0x2f, 0x0a, 0xf1, 0x89, 0xe6, 0xe1, 0x2e, 0x54,
+	0xbf, 0xf2, 0x1b, 0xee, 0x47, 0x74, 0xa6, 0xf3, 0xd7, 0x4e, 0xd6, 0xc8, 0x5f, 0x0a, 0x39, 0xa3,
+	0x33, 0xfc, 0x0f, 0xea, 0xd3, 0x70, 0xc1, 0xa4, 0x10, 0xf2, 0xb3, 0x66, 0xd8, 0x39, 0x63, 0xe3,
+	0x16, 0x56, 0xb4, 0x7f, 0xc1, 0x89, 0xc4, 0x94, 0x87, 0xcc, 0xe7, 0x11, 0xe3, 0x5e, 0x39, 0x27,
+	0x81, 0x01, 0x47, 0x11, 0xe3, 0x7d, 0x07, 0x6a, 0x01, 0x5b, 0xf2, 0x19, 0xf3, 0x79, 0xd0, 0xfe,
+	0x08, 0xce, 0xbd, 0xc1, 0x21, 0x42, 0x39, 0xa6, 0xba, 0x64, 0xab, 0x53, 0x23, 0xda, 0xc6, 0x26,
+	0x54, 0x43, 0x2a, 0xb9, 0x5c, 0x04, 0xa6, 0x6d, 0x8b, 0xdc, 0xfa, 0xf8, 0x0f, 0xd4, 0x42, 0x11,
+	0xcf, 0xcd, 0xa1, 0x99, 0xd2, 0x1d, 0xd0, 0xfe, 0x06, 0x55, 0xad, 0xc4, 0xa9, 0x98, 0xe3, 0x1e,
+	0x38, 0xc5, 0x1a, 0xf8, 0x3c, 0xc8, 0x2f, 0x80, 0x02, 0x1a, 0x05, 0xc5, 0x4a, 0x95, 0xfe, 0xb4,
+	0x52, 0x2f, 0xa1, 0xc2, 0x54, 0xc2, 0xcc, 0xdb, 0xd6, 0x9a, 0x6e, 0x99, 0x45, 0x7a, 0x20, 0x3b,
+	0xc9, 0x29, 0xed, 0x4f, 0x80, 0x13, 0x16, 0x07, 0x13, 0x99, 0x32, 0x1a, 0x11, 0x96, 0x25, 0x22,
+	0xce, 0x18, 0xee, 0x40, 0xe5, 0x4c, 0x6b, 0xa1, 0x4b, 0xb0, 0x49, 0xee, 0xa9, 0x4e, 0xfa, 0x85,
+	0x90, 0xf9, 0x74, 0xef, 0x00, 0xa5, 0xcb, 0xf5, 0xe8, 0xdd, 0x48, 0xb7, 0x68, 0x13, 0x6d, 0xbf,
+	0x38, 0x82, 0x8a, 0x59, 0x61, 0x44, 0x68, 0x18, 0xcb, 0xbf, 0x3c, 0x7f, 0x7f, 0x3e, 0xbe, 0x3e,
+	0x77, 0xd7, 0x10, 0xa0, 0x72, 0x36, 0xee, 0x8f, 0x4e, 0x87, 0xae, 0x85, 0x55, 0x13, 0xed, 0x96,
+	0xb0, 0x0e, 0xb5, 0xfe, 0xe9, 0xe5, 0xf0, 0x62, 0x3c, 0xbe, 0x38, 0x71, 0xed, 0xde, 0x4f, 0x0b,
+	0xdc, 0x81, 0x08, 0x43, 0xad, 0xc1, 0x84, 0xa5, 0x6a, 0x2a, 0xf8, 0x0a, 0xca, 0xaa, 0x6e, 0xac,
+	0xeb, 0xe6, 0x0a, 0x01, 0x9b, 0x3b, 0x8f, 0xf6, 0x67, 0xa8, 0xde, 0x26, 0xbe, 0x05, 0xb8, 0x6b,
+	0x13, 0x9f, 0x52, 0xa4, 0xf9, 0xb7, 0x79, 0x0f, 0x8f, 0xc4, 0xe8, 0x58, 0x78, 0x08, 0x0d, 0xc2,
+	0x12, 0x91, 0xca, 0x0f, 0x22, 0xe3, 0x2a, 0x02, 0x1f, 0x49, 0xff, 0xec, 0xcd, 0x07, 0xb0, 0x61,
+	0x62, 0xf3, 0x4f, 0xc1, 0xb9, 0xf7, 0xec, 0x9e, 0x0b, 0x9a, 0x56, 0xb4, 0x7f, 0xf0, 0x2b, 0x00,
+	0x00, 0xff, 0xff, 0x84, 0x08, 0x96, 0xed, 0x9f, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -270,6 +528,9 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type CollectorServiceClient interface {
 	Send(ctx context.Context, in *EventLog, opts ...grpc.CallOption) (*empty.Empty, error)
+	SendStream(ctx context.Context, opts ...grpc.CallOption) (CollectorService_SendStreamClient, error)
+	ReportPosition(ctx context.Context, in *Coordinates, opts ...grpc.CallOption) (*empty.Empty, error)
+	ReportStatus(ctx context.Context, in *Status, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type collectorServiceClient struct {
@@ -289,9 +550,64 @@ func (c *collectorServiceClient) Send(ctx context.Context, in *EventLog, opts ..
 	return out, nil
 }
 
+func (c *collectorServiceClient) SendStream(ctx context.Context, opts ...grpc.CallOption) (CollectorService_SendStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_CollectorService_serviceDesc.Streams[0], "/api.CollectorService/SendStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &collectorServiceSendStreamClient{stream}
+	return x, nil
+}
+
+type CollectorService_SendStreamClient interface {
+	Send(*DetectionEvent) error
+	CloseAndRecv() (*SendStreamResponse, error)
+	grpc.ClientStream
+}
+
+type collectorServiceSendStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *collectorServiceSendStreamClient) Send(m *DetectionEvent) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *collectorServiceSendStreamClient) CloseAndRecv() (*SendStreamResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(SendStreamResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *collectorServiceClient) ReportPosition(ctx context.Context, in *Coordinates, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/api.CollectorService/ReportPosition", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *collectorServiceClient) ReportStatus(ctx context.Context, in *Status, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/api.CollectorService/ReportStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CollectorServiceServer is the server API for CollectorService service.
 type CollectorServiceServer interface {
 	Send(context.Context, *EventLog) (*empty.Empty, error)
+	SendStream(CollectorService_SendStreamServer) error
+	ReportPosition(context.Context, *Coordinates) (*empty.Empty, error)
+	ReportStatus(context.Context, *Status) (*empty.Empty, error)
 }
 
 func RegisterCollectorServiceServer(s *grpc.Server, srv CollectorServiceServer) {
@@ -316,6 +632,68 @@ func _CollectorService_Send_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CollectorService_SendStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(CollectorServiceServer).SendStream(&collectorServiceSendStreamServer{stream})
+}
+
+type CollectorService_SendStreamServer interface {
+	SendAndClose(*SendStreamResponse) error
+	Recv() (*DetectionEvent, error)
+	grpc.ServerStream
+}
+
+type collectorServiceSendStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *collectorServiceSendStreamServer) SendAndClose(m *SendStreamResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *collectorServiceSendStreamServer) Recv() (*DetectionEvent, error) {
+	m := new(DetectionEvent)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _CollectorService_ReportPosition_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Coordinates)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CollectorServiceServer).ReportPosition(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.CollectorService/ReportPosition",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CollectorServiceServer).ReportPosition(ctx, req.(*Coordinates))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CollectorService_ReportStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Status)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CollectorServiceServer).ReportStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.CollectorService/ReportStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CollectorServiceServer).ReportStatus(ctx, req.(*Status))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _CollectorService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "api.CollectorService",
 	HandlerType: (*CollectorServiceServer)(nil),
@@ -324,7 +702,21 @@ var _CollectorService_serviceDesc = grpc.ServiceDesc{
 			MethodName: "Send",
 			Handler:    _CollectorService_Send_Handler,
 		},
+		{
+			MethodName: "ReportPosition",
+			Handler:    _CollectorService_ReportPosition_Handler,
+		},
+		{
+			MethodName: "ReportStatus",
+			Handler:    _CollectorService_ReportStatus_Handler,
+		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "SendStream",
+			Handler:       _CollectorService_SendStream_Handler,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "api/api.proto",
 }

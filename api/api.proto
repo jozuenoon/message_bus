@@ -12,10 +12,20 @@ enum DEVICE {
   BLUETOOTH = 3;
 }
 
+message Status {
+  Coordinates loc = 1;
+  repeated DEVICE active_detectors = 2;
+  double battery_voltage = 3;
+  map<int32, int64> detection_count = 4;
+}
+
 message DetectionEvent {
-  string device_id = 1;
-  DEVICE type = 2;
-  repeated google.protobuf.Timestamp time = 3;
+  repeated google.protobuf.Timestamp time = 1;
+  oneof device_id {
+    string wifi_mac = 2;
+    string bluetooth_mac = 3;
+    string mobile_imei = 4;
+  }
 }
 
 message Coordinates {
@@ -30,4 +40,15 @@ message EventLog {
   repeated DetectionEvent events = 20;
 }
 
-service CollectorService { rpc Send(EventLog) returns (google.protobuf.Empty); }
+message SendStreamResponse {
+  int64 Mobile = 1;
+  int64 Bluetooth = 2;
+  int64 WIFI = 3;
+}
+
+service CollectorService {
+  rpc Send(EventLog) returns (google.protobuf.Empty);
+  rpc SendStream(stream DetectionEvent) returns (SendStreamResponse);
+  rpc ReportPosition(Coordinates) returns (google.protobuf.Empty);
+  rpc ReportStatus(Status) returns (google.protobuf.Empty);
+}
