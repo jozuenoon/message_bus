@@ -5,7 +5,7 @@ package api;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
-enum DeviceType {
+enum DEVICE {
   DEVICE_UNKNOWN = 0;
   MOBILE = 1;
   WIFI = 2;
@@ -14,7 +14,7 @@ enum DeviceType {
 
 message DetectionEvent {
   string device_id = 1;
-  DeviceType type = 2;
+  DEVICE type = 2;
   repeated google.protobuf.Timestamp time = 3;
 }
 
