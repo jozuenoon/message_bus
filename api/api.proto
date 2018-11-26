@@ -41,9 +41,9 @@ message EventLog {
 }
 
 message SendStreamResponse {
-  int64 Mobile = 1;
-  int64 Bluetooth = 2;
-  int64 WIFI = 3;
+  int64 mobile = 1;
+  int64 bluetooth = 2;
+  int64 wifi = 3;
 }
 
 service CollectorService {
