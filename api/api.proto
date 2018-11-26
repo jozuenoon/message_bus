@@ -6,16 +6,16 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
 enum DeviceType {
-    DEVICE_UNKNOWN = 0;
-    MOBILE = 1;
-    WIFI = 2;
-    BLUETOOTH = 3;
+  DEVICE_UNKNOWN = 0;
+  MOBILE = 1;
+  WIFI = 2;
+  BLUETOOTH = 3;
 }
 
 message DetectionEvent {
-	string device_id = 1;
-	DeviceType type = 2;
-	repeated google.protobuf.Timestamp time = 3;
+  string device_id = 1;
+  DeviceType type = 2;
+  repeated google.protobuf.Timestamp time = 3;
 }
 
 message Coordinates {
@@ -25,11 +25,9 @@ message Coordinates {
 }
 
 message EventLog {
-	string detector_id = 1;
-	Coordinates loc = 2;
-	repeated DetectionEvent events = 20;
+  string detector_id = 1;
+  Coordinates loc = 2;
+  repeated DetectionEvent events = 20;
 }
 
-service CollectorService {
-  rpc Send(EventLog) returns (google.protobuf.Empty);
-}
+service CollectorService { rpc Send(EventLog) returns (google.protobuf.Empty); }
