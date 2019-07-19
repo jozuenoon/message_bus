@@ -1,4 +1,6 @@
-# Travel time information
+# Travel time information system
+[![GolangCI](https://golangci.com/badges/github.com/jozuenoon/message_bus.svg)](https://golangci.com/r/github.com/jozuenoon/message_bus)
+
 
 This repository is part of bigger conceptual system that would
 provide travel time estimations based on mobile devices identification.
@@ -40,8 +42,11 @@ Storing events from detectors would include detector ID as root path
 then bucketing based on unix timestamp with bucket size of 100 seconds:
 ```bash
 ${namespace}/detectors/<detector_id>/<unix_timestamp/100>/<device_id>
-value: {"time": <rfc3339>}
+value: {"time": "<rfc3339>"} # storing precise time
 ```
+
+There is device ID duplicated intentionally inside value for convenience and
+precise time of detection.
 
 Consecutive timestamp values would look like following:
 ```$xslt
@@ -55,11 +60,15 @@ leap years, daylight saving time changes etc.
 
 Since detectors are representing directed graph of traffic flows we can
 limit complexity of calculating all graph connections by explicitly declaring
-links between detectors by declaring for each detector it's incoming
-traffic peers.
+links between detectors by listing it's incoming traffic peers.
 ```bash
-${namespace}/<dest_detector_id>/<src_detector_id>
+${namespace}/links/<dest_detector_id>/<src_detector_id#0>
+${namespace}/links/<dest_detector_id>/<src_detector_id#1>
+${namespace}/links/<dest_detector_id>/<src_detector_id#2>
+value: {} # empty value since ETCD would create dir otherwise
 ```
+
+
 
 Worker which would calculate travel times for given detector should acquire
 `<dest_detector_id>` to reserve given batch of work since number of source detectors

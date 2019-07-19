@@ -4,7 +4,16 @@ import "context"
 
 var _ QueryServiceServer = (*service)(nil)
 
-type service struct {}
+func NewQueryService(repo Repository) QueryServiceServer {
+	return &service{
+		repo: repo,
+	}
+}
+
+
+type service struct {
+	repo Repository
+}
 
 func (s *service) StreamEvents(*GetEventsRequest, QueryService_StreamEventsServer) error {
 	panic("implement me")

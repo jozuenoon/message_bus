@@ -7,6 +7,13 @@ import (
 
 var _ CollectorServiceServer = (*service)(nil)
 
+func NewCollectorService(repo Repository) CollectorServiceServer {
+	return &service{
+		repo: repo,
+	}
+}
+
+
 type service struct {
 	repo Repository
 }
