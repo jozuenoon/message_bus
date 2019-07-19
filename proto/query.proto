@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package queryserver;
+package query;
 
 import "google/protobuf/timestamp.proto";
 
@@ -42,6 +42,6 @@ message VoltageReport {
 
 service QueryService {
     rpc GetEvents(GetEventsRequest) returns (GetEventsResponse);
-    rpc GetEventsStream(GetEventsRequest) returns (stream DetectionEvent);
+    rpc StreamEvents(GetEventsRequest) returns (stream DetectionEvent);
     rpc GetBatteryVoltage(GetBatteryVoltageRequest) returns (GetBatteryVoltageResponse);
 }

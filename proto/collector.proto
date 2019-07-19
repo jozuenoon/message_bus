@@ -30,8 +30,10 @@ message DetectionEvent {
 
 message Coordinates {
   string detector_id = 1;
-  double latitude = 2;
-  double longitude = 3;
+  // Since decimal is not supported. We use int64 scaled values with fixed 5 decimal places.
+  // This means that 1 is equivalent to 0.00001 decimal degrees so ground precision is around 1.1132 m
+  int64 latitude = 2;
+  int64 longitude = 3;
 }
 
 message EventLog {
