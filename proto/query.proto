@@ -6,11 +6,7 @@ import "google/protobuf/timestamp.proto";
 
 message DetectionEvent {
     repeated google.protobuf.Timestamp time = 1;
-    oneof device_id {
-        string wifi_mac = 2;
-        string bluetooth_mac = 3;
-        string mobile_imsi = 4;
-    }
+    string device_id = 2;
 }
 
 message Range {
@@ -19,16 +15,33 @@ message Range {
 }
 
 message GetEventsRequest {
-    int64 limit = 1;
-    repeated string detector_ids = 2;
-    Range range = 3;
+    repeated string detector_ids = 1;
+    Range range = 2;
+    int64 travels_limit = 3;
+    int64 device_limit = 4;
 }
 
 message GetEventsResponse {
     repeated DetectionEvent events = 1;
 }
 
+message GetBatteryVoltageRequest {
+    repeated string detector_ids = 1;
+    Range range = 2;
+    int64 limit = 3;
+}
+
+message GetBatteryVoltageResponse {
+    repeated VoltageReport reports = 1;
+}
+
+message VoltageReport {
+    string detector_id = 1;
+    repeated double voltage = 2;
+}
+
 service QueryService {
     rpc GetEvents(GetEventsRequest) returns (GetEventsResponse);
     rpc GetEventsStream(GetEventsRequest) returns (stream DetectionEvent);
+    rpc GetBatteryVoltage(GetBatteryVoltageRequest) returns (GetBatteryVoltageResponse);
 }

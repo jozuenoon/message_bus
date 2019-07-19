@@ -22,9 +22,9 @@ message DetectorStatus {
 message DetectionEvent {
   repeated google.protobuf.Timestamp time = 1;
   oneof device_id {
-    string wifi_mac = 2;
-    string bluetooth_mac = 3;
-    string mobile_imei = 4;
+    string wifi = 2;
+    string bluetooth = 3;
+    string mobile = 4;
   }
 }
 
@@ -48,9 +48,9 @@ message SendStreamResponse {
 // CollectorService - provides methods for collecting
 // events from detectors.
 service CollectorService {
-  rpc Send(EventLog) returns (google.protobuf.Empty);
-  rpc SendStream(stream DetectionEvent) returns (SendStreamResponse);
-  rpc ReportPosition(Coordinates) returns (google.protobuf.Empty);
-  rpc ReportStatus(DetectorStatus) returns (google.protobuf.Empty);
+  rpc CreateEventLog(EventLog) returns (google.protobuf.Empty);
+  rpc StreamEventLog(stream EventLog) returns (SendStreamResponse);
+  rpc CreateCoordinates(Coordinates) returns (google.protobuf.Empty);
+  rpc CreateDetectorStatus(DetectorStatus) returns (google.protobuf.Empty);
 }
 
