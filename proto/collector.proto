@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package api;
+package collector;
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
@@ -12,7 +12,7 @@ enum DEVICE {
   BLUETOOTH = 3;
 }
 
-message Status {
+message DetectorStatus {
   Coordinates loc = 1;
   repeated DEVICE active_detectors = 2;
   double battery_voltage = 3;
@@ -29,26 +29,28 @@ message DetectionEvent {
 }
 
 message Coordinates {
-  string name = 1;
+  string detector_id = 1;
   double latitude = 2;
   double longitude = 3;
 }
 
 message EventLog {
-  string detector_id = 1;
-  Coordinates loc = 2;
+  Coordinates loc = 1;
   repeated DetectionEvent events = 20;
 }
 
 message SendStreamResponse {
-  int64 mobile = 1;
-  int64 bluetooth = 2;
-  int64 wifi = 3;
+  int64 mobile = 2;
+  int64 bluetooth = 3;
+  int64 wifi = 4;
 }
 
+// CollectorService - provides methods for collecting
+// events from detectors.
 service CollectorService {
   rpc Send(EventLog) returns (google.protobuf.Empty);
   rpc SendStream(stream DetectionEvent) returns (SendStreamResponse);
   rpc ReportPosition(Coordinates) returns (google.protobuf.Empty);
-  rpc ReportStatus(Status) returns (google.protobuf.Empty);
+  rpc ReportStatus(DetectorStatus) returns (google.protobuf.Empty);
 }
+
