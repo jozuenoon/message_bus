@@ -11,7 +11,7 @@ type Repository struct {
 	mock.Mock
 }
 
-// GetDetectors provides a mock function with given fields: latitude, longitude
-func (_m *Repository) GetDetectors(latitude types.DecimalDegrees, longitude types.DecimalDegrees) {
-	_m.Called(latitude, longitude)
+// GetDetectors provides a mock function with given fields: latitude, longitude, radius
+func (_m *Repository) GetDetectors(latitude types.DecimalDegrees, longitude types.DecimalDegrees, radius int64) {
+	_m.Called(latitude, longitude, radius)
 }
