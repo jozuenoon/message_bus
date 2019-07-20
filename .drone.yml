@@ -15,6 +15,11 @@ platform:
   os: linux
   arch: amd64
 
+trigger:
+  event:
+    exclude:
+    - pull_request
+
 steps:
   # Goreleaser needs at least the last two tags.
   - name: fetch-tags
