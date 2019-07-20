@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package query;
+
+import "google/protobuf/timestamp.proto";
+
+message DetectionEvent {
+    repeated google.protobuf.Timestamp time = 1;
+    string device_id = 2;
+}
+
+message Range {
+    google.protobuf.Timestamp after = 1;
+    google.protobuf.Timestamp before = 2;
+}
+
+message GetEventsRequest {
+    repeated string detector_ids = 1;
+    Range range = 2;
+    int64 travels_limit = 3;
+    int64 device_limit = 4;
+}
+
+message GetEventsResponse {
+    repeated DetectionEvent events = 1;
+}
+
+message GetBatteryVoltageRequest {
+    repeated string detector_ids = 1;
+    Range range = 2;
+    int64 limit = 3;
+}
+
+message GetBatteryVoltageResponse {
+    repeated VoltageReport reports = 1;
+}
+
+message VoltageReport {
+    string detector_id = 1;
+    repeated double voltage = 2;
+}
+
+service QueryService {
+    rpc GetEvents(GetEventsRequest) returns (GetEventsResponse);
+    rpc StreamEvents(GetEventsRequest) returns (stream DetectionEvent);
+    rpc GetBatteryVoltage(GetBatteryVoltageRequest) returns (GetBatteryVoltageResponse);
+}

@@ -1,0 +1,8 @@
+# See cmd/cq/main.go.config for reference.
+
+collector_port: :9000
+query_port: :8000
+healthcheck_port: :5000
+etcd:
+  prefix: tdc
+  endpoints: [http://127.0.0.1:2379]

@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ .Release.Name }}"
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}"
+  annotations:
+    helm.sh/created: {{ .Release.Time.Seconds | quote }}
+    kubernetes.io/ingress.class: {{ .Values.IngressClass }}
+    kubernetes.io/ingress.allow-http: "false"
+    ingress.kubernetes.io/service-upstream: "false"
+    nginx.org/proxy-pass-headers:  "Cache-Control"
+spec:
+  tls:
+  - hosts:
+    - "{{ .Values.FQDN }}"
+    secretName: {{ .Values.FQDN | replace "." "-"}}-tls-cert
+  rules:
+  - host: "{{ .Values.FQDN }}"
+    http:
+      paths:
+      - path: {{ if .Values.PathPrefix }}{{ .Values.PathPrefix }}{{ end }}{{ .Values.BasePath }}
+        backend:
+          serviceName: "{{ .Release.Name }}"
+          servicePort: {{ .Values.ServerPort }}

@@ -1,0 +1,60 @@
+# Secrets that must be set in drone.io:
+
+# GITHUB_TOKEN_DRONE (scope required: repo/public_repo)
+
+# CODECOV_TOKEN from codecov.io
+
+# Docker credentials:
+# DOCKER_USERNAME
+# DOCKER_PASSWORD
+
+kind: pipeline
+name: default
+
+platform:
+  os: linux
+  arch: amd64
+
+trigger:
+  ref:
+    include:
+      - refs/heads/master
+      - refs/tags/v*
+
+steps:
+  # Goreleaser needs at least the last two tags.
+  - name: fetch-tags
+    image: docker:git
+    commands:
+      - git fetch --tags
+
+  - name: tests
+    image: golang
+    environment:
+      GO111MODULE: on
+      CODECOV_TOKEN: { from_secret: CODECOV_TOKEN }
+    commands:
+      - go build -v ./...
+      - go test -coverpkg=./... -race -covermode=atomic -coverprofile=coverage.txt github.com/jozuenoon/message_bus
+      - curl -s https://codecov.io/bash | bash
+
+  - name: cqserver_docker
+    image: plugins/docker
+    settings:
+      dockerfile: cmd/cq/Dockerfile
+      repo: jozuenoon/message_bus
+      auto_tag: true
+      username: { from_secret: DOCKER_USERNAME }
+      password: { from_secret: DOCKER_PASSWORD }
+
+  - name: release
+    image: goreleaser/goreleaser:latest
+    commands:
+      - git diff
+      - goreleaser release --rm-dist --skip-validate
+    environment:
+      GO111MODULE: on
+      GITHUB_TOKEN: { from_secret: GITHUB_TOKEN_DRONE }
+    when:
+      event:
+        - tag

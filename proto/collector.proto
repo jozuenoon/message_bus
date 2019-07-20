@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package collector;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+enum DEVICE {
+  DEVICE_UNKNOWN = 0;
+  MOBILE = 1;
+  WIFI = 2;
+  BLUETOOTH = 3;
+}
+
+message DetectorStatus {
+  Coordinates loc = 1;
+  repeated DEVICE active_detectors = 2;
+  double battery_voltage = 3;
+  map<int32, int64> detection_count = 4;
+}
+
+message DetectionEvent {
+  repeated google.protobuf.Timestamp time = 1;
+  oneof device_id {
+    string wifi = 2;
+    string bluetooth = 3;
+    string mobile = 4;
+  }
+}
+
+message Coordinates {
+  string detector_id = 1;
+  // Since decimal is not supported. We use int64 scaled values with fixed 5 decimal places.
+  // This means that 1 is equivalent to 0.00001 decimal degrees so ground precision is around 1.1132 m
+  int64 latitude = 2;
+  int64 longitude = 3;
+}
+
+message EventLog {
+  Coordinates loc = 1;
+  repeated DetectionEvent events = 20;
+}
+
+message SendStreamResponse {
+  int64 mobile = 2;
+  int64 bluetooth = 3;
+  int64 wifi = 4;
+}
+
+// CollectorService - provides methods for collecting
+// events from detectors.
+service CollectorService {
+  rpc CreateEventLog(EventLog) returns (google.protobuf.Empty);
+  rpc StreamEventLog(stream EventLog) returns (SendStreamResponse);
+  rpc CreateCoordinates(Coordinates) returns (google.protobuf.Empty);
+  rpc CreateDetectorStatus(DetectorStatus) returns (google.protobuf.Empty);
+}
+

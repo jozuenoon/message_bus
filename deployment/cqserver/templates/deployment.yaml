@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Release.Name }}"
+  annotations:
+    helm.sh/created: {{.Release.Time.Seconds | quote }}
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}"
+spec:
+  replicas: {{ .Values.Servers }}
+  minReadySeconds: 10
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: "{{ .Release.Name }}"
+  strategy:
+    # indicate which strategy we want for rolling update
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: "{{ .Release.Name }}"
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: "{{ .Release.Name }}"
+        image: {{ .Values.Registry }}/{{ .Values.RepoName }}:{{ .Values.ImageTag }}
+        command:
+          - /server
+        args:
+          - --collector_port={{ .Values.CollectorPort }}
+          - --query_port={{ .Values.QueryPort }}
+          - --healthcheck_port={{.Values.HealthCheckPort}}
+        resources:
+          limits:
+            cpu: 100m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 64Mi
+        readinessProbe:
+          exec:
+            command: ["/grpc_health_probe", "-addr=:5000"]
+          initialDelaySeconds: 5
+        livenessProbe:
+          exec:
+            command: ["/grpc_health_probe", "-addr=:5000"]
+          initialDelaySeconds: 10
+        ports:
+        - containerPort: {{ .Values.CollectorPort }}
+        - containerPort: {{ .Values.QueryPort}}
+        - containerPort: {{ .Values.HealthCheckPort}}
+        imagePullPolicy: {{ .Values.ImagePullPolicy }}
+        volumeMounts:
+        - name: cqserver-config
+          mountPath: /config/
+      volumes:
+      - name: cqserver-config
+        configMap:
+          name: "{{ .Release.Name }}"
