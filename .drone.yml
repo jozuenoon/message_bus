@@ -38,10 +38,10 @@ steps:
       - go test -coverpkg=./... -race -covermode=atomic -coverprofile=coverage.txt github.com/jozuenoon/message_bus
       - curl -s https://codecov.io/bash | bash
 
-  - name: docker
+  - name: cqserver_docker
     image: plugins/docker
     settings:
-      dockerfile: cmd/Dockerfile
+      dockerfile: cmd/cq/Dockerfile
       repo: jozuenoon/message_bus
       auto_tag: true
       username: { from_secret: DOCKER_USERNAME }
