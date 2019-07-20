@@ -15,14 +15,6 @@ platform:
   os: linux
   arch: amd64
 
-trigger:
-  branch:
-    include:
-      - master
-  ref:
-    include:
-      - refs/tags/v*
-
 steps:
   # Goreleaser needs at least the last two tags.
   - name: fetch-tags
@@ -48,6 +40,9 @@ steps:
       auto_tag: true
       username: { from_secret: DOCKER_USERNAME }
       password: { from_secret: DOCKER_PASSWORD }
+    when:
+      event:
+        - tag
 
   - name: release
     image: goreleaser/goreleaser:latest
