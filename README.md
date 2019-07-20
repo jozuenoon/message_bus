@@ -96,7 +96,7 @@ links between detectors by listing it's incoming traffic peers.
 ${namespace}/links/<dest_detector_id>/<src_detector_id#0>
 ${namespace}/links/<dest_detector_id>/<src_detector_id#1>
 ${namespace}/links/<dest_detector_id>/<src_detector_id#2>
-value: {} # empty value since ETCD would create dir otherwise
+value: {"max_seconds": "600"} # maximum travel time which is taken under consideration
 ```
 
 

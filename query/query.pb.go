@@ -6,13 +6,12 @@ package query
 import (
 	context "context"
 	fmt "fmt"
-	math "math"
-
 	proto "github.com/golang/protobuf/proto"
 	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -420,6 +419,7 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryServiceClient interface {
 	GetEvents(ctx context.Context, in *GetEventsRequest, opts ...grpc.CallOption) (*GetEventsResponse, error)
+	// NOTICE: not implemented
 	StreamEvents(ctx context.Context, in *GetEventsRequest, opts ...grpc.CallOption) (QueryService_StreamEventsClient, error)
 	GetBatteryVoltage(ctx context.Context, in *GetBatteryVoltageRequest, opts ...grpc.CallOption) (*GetBatteryVoltageResponse, error)
 }
@@ -485,6 +485,7 @@ func (c *queryServiceClient) GetBatteryVoltage(ctx context.Context, in *GetBatte
 // QueryServiceServer is the server API for QueryService service.
 type QueryServiceServer interface {
 	GetEvents(context.Context, *GetEventsRequest) (*GetEventsResponse, error)
+	// NOTICE: not implemented
 	StreamEvents(*GetEventsRequest, QueryService_StreamEventsServer) error
 	GetBatteryVoltage(context.Context, *GetBatteryVoltageRequest) (*GetBatteryVoltageResponse, error)
 }

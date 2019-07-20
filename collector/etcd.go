@@ -31,6 +31,10 @@ type etcdRepository struct {
 	cli    *clientv3.Client
 }
 
+func (r *etcdRepository) CreateDetectorLink(destDetectorID, srcDetectorID string, maxSeconds int64) error {
+	panic("implement me")
+}
+
 func (r *etcdRepository) CreateDetectionEvent(detectorID string, deviceID string, timestamp time.Time) error {
 	panic("implement me")
 }

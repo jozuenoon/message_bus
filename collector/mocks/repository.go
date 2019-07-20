@@ -80,3 +80,17 @@ func (_m *Repository) CreateDetectionEvent(detectorID string, deviceID string, t
 
 	return r0
 }
+
+// CreateDetectorLink provides a mock function with given fields: destDetectorID, srcDetectorID, maxSeconds
+func (_m *Repository) CreateDetectorLink(destDetectorID string, srcDetectorID string, maxSeconds int64) error {
+	ret := _m.Called(destDetectorID, srcDetectorID, maxSeconds)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, string, int64) error); ok {
+		r0 = rf(destDetectorID, srcDetectorID, maxSeconds)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}

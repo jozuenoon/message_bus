@@ -42,6 +42,8 @@ message VoltageReport {
 
 service QueryService {
     rpc GetEvents(GetEventsRequest) returns (GetEventsResponse);
+
+    // NOTICE: not implemented
     rpc StreamEvents(GetEventsRequest) returns (stream DetectionEvent);
     rpc GetBatteryVoltage(GetBatteryVoltageRequest) returns (GetBatteryVoltageResponse);
 }
