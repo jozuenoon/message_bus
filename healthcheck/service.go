@@ -16,7 +16,6 @@ func New(logger log15.Logger) grpc_health_v1.HealthServer {
 	}
 }
 
-
 type server struct {
 	logger log15.Logger
 }

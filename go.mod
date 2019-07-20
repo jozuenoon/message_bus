@@ -13,5 +13,6 @@ require (
 	github.com/oklog/run v1.0.0
 	github.com/stevenroose/gonfig v0.1.4
 	github.com/stretchr/testify v1.3.0
+	golang.org/x/net v0.0.0-20190311183353-d8887717615a
 	google.golang.org/grpc v1.22.0
 )

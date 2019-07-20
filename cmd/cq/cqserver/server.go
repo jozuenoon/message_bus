@@ -3,30 +3,30 @@ package cqserver
 import (
 	"context"
 	"fmt"
+
 	"github.com/inconshreveable/log15"
 	"github.com/jozuenoon/message_bus/cmd/pkg"
 	"github.com/oklog/run"
 )
 
-func New(collectorPort, queryPort, healthCheckPort, etcdPrefix string, etcdEndpoints []string, logger log15.Logger) *server {
+func New(collectorPort, queryPort, healthCheckPort, etcdPrefix string, etcdEndpoints []string, logger log15.Logger) pkg.Runner {
 	return &server{
-		collectorPort: collectorPort,
-		queryPort: queryPort,
+		collectorPort:   collectorPort,
+		queryPort:       queryPort,
 		healthCheckPort: healthCheckPort,
-		etcdPrefix: etcdPrefix,
-		etcdEndpoints: etcdEndpoints,
-		logger: logger,
+		etcdPrefix:      etcdPrefix,
+		etcdEndpoints:   etcdEndpoints,
+		logger:          logger,
 	}
 }
 
-
 type server struct {
-	collectorPort string
-	queryPort string
+	collectorPort   string
+	queryPort       string
 	healthCheckPort string
-	etcdPrefix string
-	etcdEndpoints []string
-	logger log15.Logger
+	etcdPrefix      string
+	etcdEndpoints   []string
+	logger          log15.Logger
 }
 
 func (s *server) Run(ctx context.Context) error {
@@ -34,10 +34,10 @@ func (s *server) Run(ctx context.Context) error {
 	cctx, cancel := context.WithCancel(ctx)
 
 	// If context is canceled deeper in application this will terminate whole server.
-	g.Add(func () error {
+	g.Add(func() error {
 		<-cctx.Done()
 		return fmt.Errorf("context canceled")
-	}, func (error) {
+	}, func(error) {
 		cancel()
 	})
 

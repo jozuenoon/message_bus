@@ -1,17 +1,18 @@
-package	query
+package query
 
 import (
+	"time"
+
 	"github.com/coreos/etcd/clientv3"
 	"github.com/inconshreveable/log15"
 	"github.com/jozuenoon/message_bus/pkg/types"
-	"time"
 )
 
 var _ Repository = (*etcdRepository)(nil)
 
 func NewEtcdRepository(prefix string, endpoints []string, logger log15.Logger) (Repository, error) {
 	cli, err := clientv3.New(clientv3.Config{
-		Endpoints: endpoints,
+		Endpoints:   endpoints,
 		DialTimeout: 5 * time.Second,
 	})
 	if err != nil {
@@ -20,14 +21,14 @@ func NewEtcdRepository(prefix string, endpoints []string, logger log15.Logger) (
 	return &etcdRepository{
 		prefix: prefix,
 		logger: logger,
-		cli: cli,
+		cli:    cli,
 	}, nil
 }
 
 type etcdRepository struct {
 	prefix string
 	logger log15.Logger
-	cli *clientv3.Client
+	cli    *clientv3.Client
 }
 
 func (r *etcdRepository) GetDetectors(latitude, longitude types.DecimalDegrees, radius int64) {

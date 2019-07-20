@@ -10,7 +10,6 @@ func NewQueryService(repo Repository) QueryServiceServer {
 	}
 }
 
-
 type service struct {
 	repo Repository
 }
@@ -22,7 +21,6 @@ func (s *service) StreamEvents(*GetEventsRequest, QueryService_StreamEventsServe
 func (s *service) GetEvents(context.Context, *GetEventsRequest) (*GetEventsResponse, error) {
 	panic("implement me")
 }
-
 
 func (s *service) GetBatteryVoltage(context.Context, *GetBatteryVoltageRequest) (*GetBatteryVoltageResponse, error) {
 	panic("implement me")

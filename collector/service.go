@@ -2,6 +2,7 @@ package collector
 
 import (
 	"context"
+
 	"github.com/golang/protobuf/ptypes/empty"
 )
 
@@ -12,7 +13,6 @@ func NewCollectorService(repo Repository) CollectorServiceServer {
 		repo: repo,
 	}
 }
-
 
 type service struct {
 	repo Repository
@@ -33,7 +33,3 @@ func (s *service) CreateCoordinates(context.Context, *Coordinates) (*empty.Empty
 func (s *service) CreateDetectorStatus(context.Context, *DetectorStatus) (*empty.Empty, error) {
 	panic("implement me")
 }
-
-
-
-
