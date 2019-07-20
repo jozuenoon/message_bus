@@ -36,6 +36,33 @@ basically illegal without special permissions.
 
 [TBA]
 
+### Configuration and deployment
+
+Example configuration could be found in root directory `<service_name>.cofnig.yaml`. For
+more details please reference either calling a binary release with `--help` flag or going
+directly into `cmd/<service>/main.go` and inspecting `config` structure.
+
+Example for `cqserver`:
+```bash
+Usage of main:
+      --collector_port string      grpc collector port (default ":9000")
+      --query_port string          grpc query port (default ":8000")
+      --healthcheck_port string    grpc health check port (default ":5000")
+      --etcd.prefix string         etcd app prefix (default "tdc")
+      --etcd.endpoints string...   etcd endpoints (default "http://127.0.0.1:2379")
+      --config_file string         
+  -h, --help                       print this help menu
+```
+
+Service could be also configured via environment variables, please reference [gonfig](https://github.com/stevenroose/gonfig)
+package.
+
+Deployment assumes existence of etcd cluster with endpoints `["http://etcd-0:2379", "http://etcd-1:2379", "http://etcd-2:2379"]`.
+This could be achieved easily by deploying [etcd-operator](https://github.com/helm/charts/tree/master/stable/etcd-operator).
+
+Deployment also assumes existence of [cert-manager](https://github.com/helm/charts/tree/master/stable/cert-manager)
+to provide TLS certificates for domains. Expected issuer in this case is `http-issuer`.
+
 ### ETCD repository data model discussion
 
 Storing events from detectors would include detector ID as root path

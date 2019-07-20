@@ -8,10 +8,11 @@ import (
 	"github.com/oklog/run"
 )
 
-func New(collectorPort, queryPort, etcdPrefix string, etcdEndpoints []string, logger log15.Logger) *server {
+func New(collectorPort, queryPort, healthCheckPort, etcdPrefix string, etcdEndpoints []string, logger log15.Logger) *server {
 	return &server{
 		collectorPort: collectorPort,
 		queryPort: queryPort,
+		healthCheckPort: healthCheckPort,
 		etcdPrefix: etcdPrefix,
 		etcdEndpoints: etcdEndpoints,
 		logger: logger,
@@ -22,6 +23,7 @@ func New(collectorPort, queryPort, etcdPrefix string, etcdEndpoints []string, lo
 type server struct {
 	collectorPort string
 	queryPort string
+	healthCheckPort string
 	etcdPrefix string
 	etcdEndpoints []string
 	logger log15.Logger
@@ -47,6 +49,10 @@ func (s *server) Run(ctx context.Context) error {
 		return err
 	}
 	err = pkg.ETCDQueryServiceServer(ctx, g, s.etcdPrefix, s.queryPort, s.etcdEndpoints, s.logger.New("service", "query"))
+	if err != nil {
+		return err
+	}
+	err = pkg.HealthCheck(ctx, g, s.healthCheckPort, s.logger.New("service", "health_check"))
 	if err != nil {
 		return err
 	}
