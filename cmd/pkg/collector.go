@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func ETCDCollectorServiceServer(_ context.Context, g *run.Group, prefix string, port string, endpoints []string, logger log15.Logger) error {
+func ETCDCollectorServiceServer(_ context.Context, g *run.Group, prefix, port string, endpoints []string, logger log15.Logger) error {
 	ln, err := net.Listen("tcp", port)
 	if err != nil {
 		return err

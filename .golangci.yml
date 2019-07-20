@@ -43,6 +43,7 @@ linters:
     - maligned
     - prealloc
     - gochecknoglobals
+    - dupl
 
 run:
   skip-dirs:
