@@ -16,9 +16,11 @@ platform:
   arch: amd64
 
 trigger:
+  branch:
+    include:
+      - master
   ref:
     include:
-      - refs/heads/master
       - refs/tags/v*
 
 steps:
