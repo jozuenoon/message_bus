@@ -1,4 +1,6 @@
 # Travel time information system
+[![Build Status](https://cloud.drone.io/api/badges/jozuenoon/message_bus/status.svg)](https://cloud.drone.io/jozuenoon/message_bus)
+[![codecov](https://codecov.io/gh/jozuenoon/message_bus/branch/master/graph/badge.svg)](https://codecov.io/gh/jozuenoon/message_bus)
 [![GolangCI](https://golangci.com/badges/github.com/jozuenoon/message_bus.svg)](https://golangci.com/r/github.com/jozuenoon/message_bus)
 
 
