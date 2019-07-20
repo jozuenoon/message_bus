@@ -11,6 +11,9 @@ build_docker: cqserver_docker
 cqserver_docker:
 	docker build -f cmd/cq/Dockerfile -t $(DOCKER_REGISTRY)/cqserver:$(GIT_BRANCH)_$(GIT_COMMIT) .
 
+test:
+	go test -race ./...
+
 
 # Generators
 gen: collector query
