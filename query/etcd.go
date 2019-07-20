@@ -1,11 +1,11 @@
 package query
 
 import (
+	"context"
 	"time"
 
 	"github.com/coreos/etcd/clientv3"
 	"github.com/inconshreveable/log15"
-	"github.com/jozuenoon/message_bus/pkg/types"
 )
 
 var _ Repository = (*etcdRepository)(nil)
@@ -31,6 +31,6 @@ type etcdRepository struct {
 	cli    *clientv3.Client
 }
 
-func (r *etcdRepository) GetDetectors(latitude, longitude types.DecimalDegrees, radius int64) {
+func (r *etcdRepository) GetEvents(ctx context.Context, detectors []string, after, before time.Time, limit int64) ([]*Event, error) {
 	panic("implement me")
 }

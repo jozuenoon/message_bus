@@ -7,6 +7,7 @@ import "google/protobuf/timestamp.proto";
 message DetectionEvent {
     repeated google.protobuf.Timestamp time = 1;
     string device_id = 2;
+    string detector_id = 3;
 }
 
 message Range {
@@ -17,8 +18,7 @@ message Range {
 message GetEventsRequest {
     repeated string detector_ids = 1;
     Range range = 2;
-    int64 travels_limit = 3;
-    int64 device_limit = 4;
+    int64 limit = 3;
 }
 
 message GetEventsResponse {

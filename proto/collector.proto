@@ -62,9 +62,9 @@ message DetectorLink {
 // events from detectors.
 service CollectorService {
   rpc CreateEventLog(EventLog) returns (google.protobuf.Empty);
-  rpc CreateDetectorLink(DetectorLink) returns (google.protobuf.Empty);
 
   // NOTICE: not implemented
+  rpc CreateDetectorLink(DetectorLink) returns (google.protobuf.Empty);
   rpc StreamEventLog(stream EventLog) returns (SendStreamResponse);
   rpc CreateCoordinates(Coordinates) returns (google.protobuf.Empty);
   rpc CreateDetectorStatus(DetectorStatus) returns (google.protobuf.Empty);
