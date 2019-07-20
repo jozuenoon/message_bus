@@ -7,6 +7,8 @@
 This repository is part of bigger conceptual system that would
 provide travel time estimations based on mobile devices identification.
 
+Explanation:
+
 Let's say that we have Bluetooth enabled device in car or with us
 while commuting. While we pass through our regular paths around
 city special detectors grabs MAC address of our device and time
@@ -21,9 +23,9 @@ Repository provides server for collecting and querying
 events received from mobile devices detectors. Additionally 
 there is client tool for simple traffic flow simulation.
 
-## Bluetooth/WiFi/IMSI detectors aka. detector of mobile devices
+## Bluetooth / WiFi / IMSI detectors aka. detector of mobile devices
 
-Detectors are devices located around city, runways etc. which
+Detectors are devices located around city, highways etc. which
 are capable for intercepting Bluetooth, WiFi MAC addresses and
 IMSI ids from passing travelers.
 
@@ -36,7 +38,7 @@ basically illegal without special permissions.
 
 # Technical details
 
-[TBA]
+This section provides some extra technical details about solution.
 
 ### Configuration and deployment
 

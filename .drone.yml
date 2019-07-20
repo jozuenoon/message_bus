@@ -35,7 +35,7 @@ steps:
       CODECOV_TOKEN: { from_secret: CODECOV_TOKEN }
     commands:
       - go build -v ./...
-      - go test -coverpkg=./... -race -covermode=atomic -coverprofile=coverage.txt github.com/jozuenoon/message_bus
+      - go test -coverpkg=./... -race -covermode=atomic -coverprofile=coverage.txt ./...
       - curl -s https://codecov.io/bash | bash
 
   - name: cqserver_docker
