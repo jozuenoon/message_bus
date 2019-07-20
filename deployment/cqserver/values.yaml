@@ -1,0 +1,16 @@
+Name: "cqserver"
+RepoName: "cqserver"
+ImageTag: "v0.0.1"
+Registry: "jozuenoon/cqserver"
+Servers: 2
+HealthCheckPort: 5000
+CollectorPort: 8000
+QueryPort: 9000
+Scheme: "HTTP"
+ImagePullPolicy: "Always"
+
+# Ingress configuration
+IngressClass: "nginx"
+FQDN: "example.com"
+
+ETCDEndpoints: ["http://etcd-0:2379", "http://etcd-1:2379", "http://etcd-2:2379"]
