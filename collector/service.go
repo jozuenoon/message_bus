@@ -26,7 +26,7 @@ type service struct {
 	logger log15.Logger
 }
 
-func (s *service) CreateEventLog(_ context.Context, eventLog *EventLog) (*empty.Empty, error) {
+func (s *service) CreateEventLog(ctx context.Context, eventLog *EventLog) (*empty.Empty, error) {
 	detectorID := eventLog.Loc.DetectorId
 	for _, ev := range eventLog.Events {
 		for _, ts := range ev.Time {
@@ -38,25 +38,25 @@ func (s *service) CreateEventLog(_ context.Context, eventLog *EventLog) (*empty.
 				return nil, status.Error(codes.InvalidArgument, err.Error())
 			}
 
-			err = s.repo.CreateDetectionEvent(detectorID, deviceID, t)
+			err = s.repo.CreateDetectionEvent(ctx, detectorID, deviceID, t)
 			if err != nil {
 				s.logger.Error("failed to create event", "err", err)
 				return nil, status.Error(codes.Internal, "failed to save detection event")
 			}
 		}
 	}
-	return nil, nil
+	return &empty.Empty{}, nil
 }
 
-func (s *service) CreateDetectorLink(_ context.Context, dLink *DetectorLink) (*empty.Empty, error) {
+func (s *service) CreateDetectorLink(ctx context.Context, dLink *DetectorLink) (*empty.Empty, error) {
 	for _, srcDetector := range dLink.SrcDetectors {
-		err := s.repo.CreateDetectorLink(dLink.DestDetectorId, srcDetector.DetectorId, srcDetector.MaxSeconds)
+		err := s.repo.CreateDetectorLink(ctx, dLink.DestDetectorId, srcDetector.DetectorId, srcDetector.MaxSeconds)
 		if err != nil {
 			s.logger.Error("failed to save detector link", "err", err)
 			return nil, status.Error(codes.Internal, "failed to save detector link")
 		}
 	}
-	return nil, nil
+	return &empty.Empty{}, nil
 }
 
 func (s *service) StreamEventLog(CollectorService_StreamEventLogServer) error {

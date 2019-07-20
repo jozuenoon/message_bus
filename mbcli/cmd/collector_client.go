@@ -6,7 +6,7 @@ import (
 )
 
 func NewCollectorClient(host string) (collector.CollectorServiceClient, error) {
-	conn, err := grpc.Dial(host)
+	conn, err := grpc.Dial(host, grpc.WithInsecure())
 	if err != nil {
 		return nil, err
 	}

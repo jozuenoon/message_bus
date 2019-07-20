@@ -1,177 +1,114 @@
-// +build integration
-
 package collector
 
 import (
+	"strings"
 	"testing"
 	"time"
-
-	"github.com/coreos/etcd/clientv3"
-	"github.com/inconshreveable/log15"
-	"github.com/jozuenoon/message_bus/pkg/types"
 )
 
-func Test_etcdRepository_CreateDetectionEvent(t *testing.T) {
-	type fields struct {
-		prefix string
-		logger log15.Logger
-		cli    *clientv3.Client
+func Test_detectorLinkKey(t *testing.T) {
+	tests := []struct {
+		name           string
+		namespace      string
+		destDetectorID string
+		srcDetectorID  string
+		want           string
+	}{
+		{
+			name:           "simple",
+			namespace:      "somenamespace",
+			destDetectorID: "dest-det-id",
+			srcDetectorID:  "src-det-id",
+			want:           "/somenamespace/links/dest-det-id/src-det-id",
+		},
 	}
-	type args struct {
+	for _, test := range tests {
+		tt := test
+		t.Run(test.name, func(t *testing.T) {
+			if got := detectorLinkKey(tt.namespace, tt.destDetectorID, tt.srcDetectorID); got != tt.want {
+				t.Errorf("detectorLinkPath() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_eventKey(t *testing.T) {
+	tests := []struct {
+		name       string
+		namespace  string
 		detectorID string
 		deviceID   string
 		timestamp  time.Time
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
+		want       string
 	}{
-		// TODO: Add test cases.
+		{
+			name:       "simple",
+			namespace:  "ns",
+			detectorID: "detID",
+			deviceID:   "devID",
+			timestamp:  time.Unix(1563568110, 0),
+			want:       "/ns/detectors/detID/1563568100/devID",
+		},
+		{
+			name:       "simple",
+			namespace:  "ns",
+			detectorID: "detID",
+			deviceID:   "devID",
+			timestamp:  time.Unix(1563568120, 0),
+			want:       "/ns/detectors/detID/1563568100/devID",
+		},
+		{
+			name:       "simple",
+			namespace:  "ns",
+			detectorID: "detID",
+			deviceID:   "devID",
+			timestamp:  time.Unix(1563568180, 0),
+			want:       "/ns/detectors/detID/1563568100/devID",
+		},
+		{
+			name:       "simple",
+			namespace:  "ns",
+			detectorID: "detID",
+			deviceID:   "devID",
+			timestamp:  time.Unix(1563568190, 0),
+			want:       "/ns/detectors/detID/1563568100/devID",
+		},
+		{
+			name:       "simple",
+			namespace:  "ns",
+			detectorID: "detID",
+			deviceID:   "devID",
+			timestamp:  time.Unix(1563568200, 0),
+			want:       "/ns/detectors/detID/1563568200/devID",
+		},
+		{
+			name:       "simple",
+			namespace:  "ns",
+			detectorID: "detID",
+			deviceID:   "devID",
+			timestamp:  time.Unix(1563568210, 0),
+			want:       "/ns/detectors/detID/1563568200/devID",
+		},
+		{
+			name:       "simple",
+			namespace:  "ns",
+			detectorID: "detID",
+			deviceID:   "devID",
+			timestamp:  time.Unix(1563568220, 0),
+			want:       "/ns/detectors/detID/1563568200/devID",
+		},
 	}
-	for _, tt := range tests {
+	for _, test := range tests {
+		tt := test
 		t.Run(tt.name, func(t *testing.T) {
-			r := &etcdRepository{
-				prefix: tt.fields.prefix,
-				logger: tt.fields.logger,
-				cli:    tt.fields.cli,
-			}
-			if err := r.CreateDetectionEvent(tt.args.detectorID, tt.args.deviceID, tt.args.timestamp); (err != nil) != tt.wantErr {
-				t.Errorf("etcdRepository.CreateDetectionEvent() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
-
-func Test_etcdRepository_CreateActiveDetectors(t *testing.T) {
-	type fields struct {
-		prefix string
-		logger log15.Logger
-		cli    *clientv3.Client
-	}
-	type args struct {
-		detectorID      string
-		activeDetectors string
-		timestamp       time.Time
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			r := &etcdRepository{
-				prefix: tt.fields.prefix,
-				logger: tt.fields.logger,
-				cli:    tt.fields.cli,
-			}
-			if err := r.CreateActiveDetectors(tt.args.detectorID, tt.args.activeDetectors, tt.args.timestamp); (err != nil) != tt.wantErr {
-				t.Errorf("etcdRepository.CreateActiveDetectors() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
-
-func Test_etcdRepository_CreateBatteryVoltage(t *testing.T) {
-	type fields struct {
-		prefix string
-		logger log15.Logger
-		cli    *clientv3.Client
-	}
-	type args struct {
-		detectorID string
-		voltage    float64
-		timestamp  time.Time
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			r := &etcdRepository{
-				prefix: tt.fields.prefix,
-				logger: tt.fields.logger,
-				cli:    tt.fields.cli,
-			}
-			if err := r.CreateBatteryVoltage(tt.args.detectorID, tt.args.voltage, tt.args.timestamp); (err != nil) != tt.wantErr {
-				t.Errorf("etcdRepository.CreateBatteryVoltage() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
-
-func Test_etcdRepository_CreateDetectionCount(t *testing.T) {
-	type fields struct {
-		prefix string
-		logger log15.Logger
-		cli    *clientv3.Client
-	}
-	type args struct {
-		detectorID   string
-		detectorType string
-		count        int64
-		timestamp    time.Time
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			r := &etcdRepository{
-				prefix: tt.fields.prefix,
-				logger: tt.fields.logger,
-				cli:    tt.fields.cli,
-			}
-			if err := r.CreateDetectionCount(tt.args.detectorID, tt.args.detectorType, tt.args.count, tt.args.timestamp); (err != nil) != tt.wantErr {
-				t.Errorf("etcdRepository.CreateDetectionCount() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
-
-func Test_etcdRepository_CreateCoordinates(t *testing.T) {
-	type fields struct {
-		prefix string
-		logger log15.Logger
-		cli    *clientv3.Client
-	}
-	type args struct {
-		detectorID string
-		latitude   types.DecimalDegrees
-		longitude  types.DecimalDegrees
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			r := &etcdRepository{
-				prefix: tt.fields.prefix,
-				logger: tt.fields.logger,
-				cli:    tt.fields.cli,
-			}
-			if err := r.CreateCoordinates(tt.args.detectorID, tt.args.latitude, tt.args.longitude); (err != nil) != tt.wantErr {
-				t.Errorf("etcdRepository.CreateCoordinates() error = %v, wantErr %v", err, tt.wantErr)
+			got := eventKey(tt.namespace, tt.detectorID, tt.deviceID, tt.timestamp)
+			// Need to remove non deterministic part of ulid.
+			sp := strings.Split(got, "/")
+			last := strings.Split(sp[len(sp)-1], ".")
+			sp[len(sp)-1] = last[1]
+			got = strings.Join(sp, "/")
+			if got != tt.want {
+				t.Errorf("detectorEventKey() = %v, want %v", got, tt.want)
 			}
 		})
 	}

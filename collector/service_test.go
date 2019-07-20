@@ -16,6 +16,7 @@ func Test_service_CreateEventLog(t *testing.T) {
 	tests := []struct {
 		name     string
 		eventLog *EventLog
+		calls    int
 		wantErr  bool
 	}{
 		{
@@ -54,14 +55,16 @@ func Test_service_CreateEventLog(t *testing.T) {
 					},
 				},
 			},
+			calls:   6,
 			wantErr: false,
 		},
 	}
-	for _, tt := range tests {
+	for _, test := range tests {
+		tt := test
 		t.Run(tt.name, func(t *testing.T) {
 			logger := log15.New("test", "collector")
 			repoMock := &mocks.Repository{}
-			mockResultFn := func(detectorID string, deviceID string, timestamp time.Time) error {
+			mockResultFn := func(_ context.Context, detectorID string, deviceID string, timestamp time.Time) error {
 				// Confirm existence of arguments in original event.
 				if detectorID != tt.eventLog.Loc.DetectorId {
 					return fmt.Errorf("wrong value of detector ID want=%v, got=%v", tt.eventLog.Loc.DetectorId, detectorID)
@@ -83,7 +86,7 @@ func Test_service_CreateEventLog(t *testing.T) {
 				return fmt.Errorf("failed to find device detection event")
 			}
 			repoMock.On("CreateDetectionEvent",
-				mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("time.Time")).
+				mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("time.Time")).
 				Return(mockResultFn, nil)
 
 			s := NewCollectorService(repoMock, logger)
@@ -92,6 +95,7 @@ func Test_service_CreateEventLog(t *testing.T) {
 				t.Errorf("service.CreateEventLog() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+			repoMock.AssertNumberOfCalls(t, "CreateDetectionEvent", tt.calls)
 		})
 	}
 }
@@ -100,6 +104,7 @@ func Test_service_CreateDetectorLink(t *testing.T) {
 	tests := []struct {
 		name    string
 		dLink   *DetectorLink
+		calls   int
 		wantErr bool
 	}{
 		{
@@ -117,13 +122,16 @@ func Test_service_CreateDetectorLink(t *testing.T) {
 					},
 				},
 			},
+			calls:   2,
+			wantErr: false,
 		},
 	}
-	for _, tt := range tests {
+	for _, test := range tests {
+		tt := test
 		t.Run(tt.name, func(t *testing.T) {
 			logger := log15.New("test", "collector")
 			repoMock := &mocks.Repository{}
-			mockResultFn := func(destDetectorID, srcDetectorID string, maxSeconds int64) error {
+			mockResultFn := func(ctx context.Context, destDetectorID, srcDetectorID string, maxSeconds int64) error {
 				// Confirm existence of arguments in original request.
 				if destDetectorID != tt.dLink.DestDetectorId {
 					return fmt.Errorf("wrong value of detector ID want=%v, got=%v", tt.dLink.DestDetectorId, destDetectorID)
@@ -137,7 +145,7 @@ func Test_service_CreateDetectorLink(t *testing.T) {
 			}
 
 			repoMock.On("CreateDetectorLink",
-				mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("int64")).
+				mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("int64")).
 				Return(mockResultFn, nil)
 
 			s := NewCollectorService(repoMock, logger)
@@ -146,6 +154,7 @@ func Test_service_CreateDetectorLink(t *testing.T) {
 				t.Errorf("service.CreateDetectorLink() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+			repoMock.AssertNumberOfCalls(t, "CreateDetectorLink", tt.calls)
 		})
 	}
 }

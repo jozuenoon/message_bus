@@ -67,17 +67,17 @@ This could be achieved easily by deploying [etcd-operator](https://github.com/he
 Deployment also assumes existence of [cert-manager](https://github.com/helm/charts/tree/master/stable/cert-manager)
 to provide TLS certificates for domains. Expected issuer in this case is `http-issuer`.
 
-### ETCD repository data model discussion
+### ETCD repository data model
 
 Storing events from detectors would include detector ID as root path
 then bucketing based on unix timestamp with bucket size of 100 seconds:
 ```bash
-${namespace}/detectors/<detector_id>/<unix_timestamp/100>/<device_id>
-value: {"time": "<rfc3339>"} # storing precise time
+${namespace}/detectors/<detector_id>/<unix_timestamp/100>/<ulid>.<device_id>
+value: {"timestamp": "<unixNano>"} # storing precise time
 ```
 
-There is device ID duplicated intentionally inside value for convenience and
-precise time of detection.
+Additionaly there is [ulid](https://github.com/oklog/ulid) concatenated with device ID to ensure
+no keys conflicts even if events overlap with millisecond accuracy. 
 
 Consecutive timestamp values would look like following:
 ```$xslt

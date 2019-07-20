@@ -3,16 +3,24 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 
+	"github.com/inconshreveable/log15"
+
+	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
-
-	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
+var collectorHost string
+var queryHost string
 
-// rootCmd represents the base command when called without any subcommands
+var logger log15.Logger
+
+var signals chan os.Signal
+
 var rootCmd = &cobra.Command{
 	Use:   "mbcli",
 	Short: "Message bus client, travel time discovery system.",
@@ -29,16 +37,16 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.mbcli.yaml)")
+	rootCmd.PersistentFlags().StringVar(&collectorHost, "collector_host", "127.0.0.1:9000",
+		"configure collector host")
+	rootCmd.PersistentFlags().StringVar(&queryHost, "query_host", "127.0.0.1:8000",
+		"configure query host")
 
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	signals = make(chan os.Signal, 2)
+	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
+
+	logger = log15.New()
 }
 
 // initConfig reads in config file and ENV variables if set.

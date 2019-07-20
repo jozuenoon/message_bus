@@ -19,7 +19,7 @@ func ETCDCollectorServiceServer(_ context.Context, g *run.Group, prefix string, 
 	if err != nil {
 		return err
 	}
-	svc := collector.NewCollectorService(repo)
+	svc := collector.NewCollectorService(repo, logger)
 	g.Add(func() error {
 		grpcServer := grpc.NewServer()
 		collector.RegisterCollectorServiceServer(grpcServer, svc)
