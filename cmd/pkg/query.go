@@ -2,11 +2,12 @@ package pkg
 
 import (
 	"context"
+	"net"
+
 	"github.com/inconshreveable/log15"
 	"github.com/jozuenoon/message_bus/query"
 	"github.com/oklog/run"
 	"google.golang.org/grpc"
-	"net"
 )
 
 func ETCDQueryServiceServer(_ context.Context, g *run.Group, prefix string, port string, endpoints []string, logger log15.Logger) error {

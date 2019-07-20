@@ -3,11 +3,12 @@ package pkg
 import (
 	"context"
 	"fmt"
-	"github.com/inconshreveable/log15"
-	"github.com/oklog/run"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/inconshreveable/log15"
+	"github.com/oklog/run"
 )
 
 var shutdownSignals = []os.Signal{syscall.SIGINT, syscall.SIGTERM}

@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"context"
+
 	"github.com/inconshreveable/log15"
 	"github.com/jozuenoon/message_bus/healthcheck"
 	"github.com/oklog/run"
