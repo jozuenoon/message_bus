@@ -69,13 +69,13 @@ var trafficCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(trafficCmd)
 
-	trafficCmdDetectorIDs = *trafficCmd.PersistentFlags().StringArray("detector_ids",
+	trafficCmd.PersistentFlags().StringArrayVar(&trafficCmdDetectorIDs, "detector_ids",
 		[]string{"xxx-1", "xxx-2", "xxx-3"}, "specify simulated detectors ids")
 
-	trafficCmdDeviceIDs = *trafficCmd.PersistentFlags().StringArray("device_ids", []string{"ddd-1", "ddd-2", "ddd-3"},
+	trafficCmd.PersistentFlags().StringArrayVar(&trafficCmdDeviceIDs, "device_ids", []string{"ddd-1", "ddd-2", "ddd-3"},
 		"specify simulated device ids")
 
-	trafficCmdRate = *trafficCmd.PersistentFlags().Int64("rate", 5, "period of emitting random event in seconds")
+	trafficCmd.PersistentFlags().Int64Var(&trafficCmdRate, "rate", 5, "period of emitting random event in seconds")
 }
 
 func randomElement(s []string) string {
