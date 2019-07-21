@@ -54,8 +54,11 @@ spec:
           initialDelaySeconds: 10
         ports:
         - containerPort: {{ .Values.CollectorPort }}
+          name: collector
         - containerPort: {{ .Values.QueryPort}}
+          name: query
         - containerPort: {{ .Values.HealthCheckPort}}
+          name: healthcheck
         imagePullPolicy: {{ .Values.ImagePullPolicy }}
         volumeMounts:
         - name: cqserver-config

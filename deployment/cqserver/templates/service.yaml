@@ -13,7 +13,15 @@ spec:
   selector:
     app: "{{ .Release.Name }}"
   ports:
-    - name: http
+    - name: collector
       protocol: TCP
-      port: {{.Values.ServerPort}}
-      targetPort: {{.Values.ServerPort}}
+      port: {{.Values.CollectorPort}}
+      targetPort: {{.Values.CollectorPort}}
+    - name: query
+      protocol: TCP
+      port: {{.Values.QueryPort}}
+      targetPort: {{.Values.QueryPort}}
+    - name: healthcheck
+      protocol: TCP
+      port: {{.Values.HealthCheckPort}}
+      targetPort: {{.Values.HealthCheckPort}}
