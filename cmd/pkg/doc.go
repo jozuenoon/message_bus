@@ -1,3 +1,3 @@
 package pkg
 
-// Common services
+// Common services. Parts of this pkg can be used to compose servers.
