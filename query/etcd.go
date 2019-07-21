@@ -42,7 +42,7 @@ type etcdRepository struct {
 func (r *etcdRepository) GetEvents(ctx context.Context, detectors []string, after, before time.Time, limit int64) ([]*Event, error) {
 	// TODO: supports only detector selection, other filers are ignored.
 	k := keys(r.prefix, detectors)
-	options := append(clientv3.WithFirstKey(), clientv3.WithPrefix(), clientv3.WithLimit(limit))
+	options := append(clientv3.WithLastKey(), clientv3.WithPrefix(), clientv3.WithLimit(limit))
 	events := []*Event{}
 	for _, key := range k {
 		resp, err := r.cli.Get(ctx, key, options...)
