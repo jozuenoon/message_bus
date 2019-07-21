@@ -27,8 +27,12 @@ type service struct {
 }
 
 func (s *service) GetEvents(ctx context.Context, req *GetEventsRequest) (*GetEventsResponse, error) {
-	after := time.Unix(req.Range.After.Seconds, int64(req.Range.After.Nanos))
-	before := time.Unix(req.Range.Before.Seconds, int64(req.Range.Before.Nanos))
+	var after, before time.Time
+	if req.Range != nil {
+		after = time.Unix(req.Range.After.Seconds, int64(req.Range.After.Nanos))
+		before = time.Unix(req.Range.Before.Seconds, int64(req.Range.Before.Nanos))
+	}
+
 	events, err := s.repo.GetEvents(ctx, req.DetectorIds, after, before, req.Limit)
 	if err != nil {
 		s.logger.Crit("failed to get events", "err", err)

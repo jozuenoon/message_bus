@@ -12,18 +12,25 @@ type Repository struct {
 	mock.Mock
 }
 
-// GetEvents provides a mock function with given fields: ctx, detectors, before, after, limit
-func (_m *Repository) GetEvents(ctx context.Context, detectors []string, before time.Time, after time.Time, limit int64) []*query.Event {
-	ret := _m.Called(ctx, detectors, before, after, limit)
+// GetEvents provides a mock function with given fields: ctx, detectors, after, before, limit
+func (_m *Repository) GetEvents(ctx context.Context, detectors []string, after time.Time, before time.Time, limit int64) ([]*query.Event, error) {
+	ret := _m.Called(ctx, detectors, after, before, limit)
 
 	var r0 []*query.Event
 	if rf, ok := ret.Get(0).(func(context.Context, []string, time.Time, time.Time, int64) []*query.Event); ok {
-		r0 = rf(ctx, detectors, before, after, limit)
+		r0 = rf(ctx, detectors, after, before, limit)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*query.Event)
 		}
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, []string, time.Time, time.Time, int64) error); ok {
+		r1 = rf(ctx, detectors, after, before, limit)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }

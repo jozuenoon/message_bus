@@ -6,7 +6,7 @@ import (
 )
 
 func NewQueryClient(host string) (query.QueryServiceClient, error) {
-	conn, err := grpc.Dial(host)
+	conn, err := grpc.Dial(host, grpc.WithInsecure())
 	if err != nil {
 		return nil, err
 	}

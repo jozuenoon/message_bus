@@ -553,8 +553,8 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type CollectorServiceClient interface {
 	CreateEventLog(ctx context.Context, in *EventLog, opts ...grpc.CallOption) (*empty.Empty, error)
-	CreateDetectorLink(ctx context.Context, in *DetectorLink, opts ...grpc.CallOption) (*empty.Empty, error)
 	// NOTICE: not implemented
+	CreateDetectorLink(ctx context.Context, in *DetectorLink, opts ...grpc.CallOption) (*empty.Empty, error)
 	StreamEventLog(ctx context.Context, opts ...grpc.CallOption) (CollectorService_StreamEventLogClient, error)
 	CreateCoordinates(ctx context.Context, in *Coordinates, opts ...grpc.CallOption) (*empty.Empty, error)
 	CreateDetectorStatus(ctx context.Context, in *DetectorStatus, opts ...grpc.CallOption) (*empty.Empty, error)
@@ -641,8 +641,8 @@ func (c *collectorServiceClient) CreateDetectorStatus(ctx context.Context, in *D
 // CollectorServiceServer is the server API for CollectorService service.
 type CollectorServiceServer interface {
 	CreateEventLog(context.Context, *EventLog) (*empty.Empty, error)
-	CreateDetectorLink(context.Context, *DetectorLink) (*empty.Empty, error)
 	// NOTICE: not implemented
+	CreateDetectorLink(context.Context, *DetectorLink) (*empty.Empty, error)
 	StreamEventLog(CollectorService_StreamEventLogServer) error
 	CreateCoordinates(context.Context, *Coordinates) (*empty.Empty, error)
 	CreateDetectorStatus(context.Context, *DetectorStatus) (*empty.Empty, error)

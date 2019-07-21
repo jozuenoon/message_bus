@@ -4,8 +4,8 @@ ImageTag: "v0.0.1"
 Registry: "jozuenoon"
 Servers: 2
 HealthCheckPort: 5000
-CollectorPort: 8000
-QueryPort: 9000
+CollectorPort: 9000
+QueryPort: 8000
 Scheme: "HTTP"
 ImagePullPolicy: "Always"
 

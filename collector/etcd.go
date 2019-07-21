@@ -16,8 +16,8 @@ import (
 	"github.com/oklog/ulid/v2"
 )
 
-const detectorsPrefix = "detectors"
-const linkPrefix = "links"
+const ETCDDetectorsPrefix = "detectors"
+const ETCDLinkPrefix = "links"
 
 var _ Repository = (*etcdRepository)(nil)
 
@@ -42,16 +42,6 @@ type etcdRepository struct {
 	cli    *clientv3.Client
 }
 
-func (r *etcdRepository) CreateDetectorLink(ctx context.Context, destDetectorID, srcDetectorID string, maxSeconds int64) error {
-	key := detectorLinkKey(r.prefix, destDetectorID, srcDetectorID)
-	value := struct {
-		MaxSeconds int64
-	}{
-		MaxSeconds: maxSeconds,
-	}
-	return r.save(ctx, key, value)
-}
-
 func (r *etcdRepository) CreateDetectionEvent(ctx context.Context, detectorID,
 	deviceID string, timestamp time.Time) error {
 
@@ -60,6 +50,16 @@ func (r *etcdRepository) CreateDetectionEvent(ctx context.Context, detectorID,
 		Timestamp int64
 	}{
 		Timestamp: timestamp.UnixNano(),
+	}
+	return r.save(ctx, key, value)
+}
+
+func (r *etcdRepository) CreateDetectorLink(ctx context.Context, destDetectorID, srcDetectorID string, maxSeconds int64) error {
+	key := detectorLinkKey(r.prefix, destDetectorID, srcDetectorID)
+	value := struct {
+		MaxSeconds int64
+	}{
+		MaxSeconds: maxSeconds,
 	}
 	return r.save(ctx, key, value)
 }
@@ -98,7 +98,7 @@ func (r *etcdRepository) save(ctx context.Context, key string, value interface{}
 }
 
 func detectorLinkKey(namespace, destDetectorID, srcDetectorID string) string {
-	return "/" + path.Join(namespace, linkPrefix, destDetectorID, srcDetectorID)
+	return "/" + path.Join(namespace, ETCDLinkPrefix, destDetectorID, srcDetectorID)
 }
 
 func eventKey(namespace, detectorID, deviceID string, timestamp time.Time) string {
@@ -107,5 +107,5 @@ func eventKey(namespace, detectorID, deviceID string, timestamp time.Time) strin
 	timeKey := strconv.FormatInt(ts-ts%100, 10)
 	entropy := ulid.Monotonic(rand.New(rand.NewSource(timestamp.UnixNano())), 0)
 	u := ulid.MustNew(ulid.Timestamp(timestamp), entropy)
-	return "/" + path.Join(namespace, detectorsPrefix, detectorID, timeKey, u.String()+"."+deviceID)
+	return "/" + path.Join(namespace, ETCDDetectorsPrefix, detectorID, timeKey, u.String()+"."+deviceID)
 }
