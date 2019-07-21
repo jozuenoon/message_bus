@@ -49,6 +49,8 @@ linters:
 run:
   skip-dirs:
     - client
+  build-tags:
+    - integration
 
 service:
   golangci-lint-version: 1.17.x

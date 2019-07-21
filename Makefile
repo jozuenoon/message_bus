@@ -11,8 +11,12 @@ build_docker: cqserver_docker
 cqserver_docker:
 	docker build -f cmd/cq/Dockerfile -t $(DOCKER_REGISTRY)/cqserver:$(GIT_BRANCH)_$(GIT_COMMIT) -t $(DOCKER_REGISTRY)/cqserver:latest .
 
+
 test:
 	go test -race ./...
+
+integration:
+	ETCD_ENDPOINTS=http://127.0.0.1:2379 go test -tags integration -race ./...
 
 .PHONY: bin
 bin:

@@ -5,7 +5,6 @@ coverage:
     - "**/mocks"
     - "healthcheck"
     - "cmd"
-    - "**/etcd.go"
     - "mbcli"
   status:
     project:
