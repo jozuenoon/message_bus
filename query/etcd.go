@@ -78,7 +78,7 @@ func eventValue(rawValue []byte) (time.Time, error) {
 	if err != nil {
 		return time.Time{}, fmt.Errorf("failed to base64 decode value: %v", err)
 	}
-	err = json.Unmarshal([]byte(vdec), &tsj)
+	err = json.Unmarshal(vdec, &tsj)
 	if err != nil {
 		return time.Time{}, fmt.Errorf("failed to unmarshal value: %v", err)
 	}
