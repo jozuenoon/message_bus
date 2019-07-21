@@ -1,7 +1,16 @@
 package query
 
-import "github.com/jozuenoon/message_bus/pkg/types"
+import (
+	"context"
+	"time"
+)
+
+type Event struct {
+	DetectorID string
+	DeviceID   string
+	Time       time.Time
+}
 
 type Repository interface {
-	GetDetectors(latitude, longitude types.DecimalDegrees, radius int64)
+	GetEvents(ctx context.Context, detectors []string, after, before time.Time, limit int64) ([]*Event, error)
 }

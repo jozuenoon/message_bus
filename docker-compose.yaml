@@ -20,6 +20,17 @@ services:
       - "2379:2379"
     volumes:
       - etcd:/etcd_data
+  cqserver:
+    container_name: cqserver
+    image: jozuenoon/cqserver
+    entrypoint: /server
+    command:
+      - '--collector_port=:9000'
+      - '--query_port=:8000'
+      - '--etcd.endpoints=http://etcd:2379'
+    ports:
+      - '9000:9000'
+      - '8000:8000'
 
 volumes:
   etcd:

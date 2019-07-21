@@ -2,6 +2,7 @@
 
 package mocks
 
+import context "context"
 import mock "github.com/stretchr/testify/mock"
 import time "time"
 import types "github.com/jozuenoon/message_bus/pkg/types"
@@ -11,13 +12,13 @@ type Repository struct {
 	mock.Mock
 }
 
-// CreateActiveDetectors provides a mock function with given fields: detectorID, activeDetectors, timestamp
-func (_m *Repository) CreateActiveDetectors(detectorID string, activeDetectors string, timestamp time.Time) error {
-	ret := _m.Called(detectorID, activeDetectors, timestamp)
+// CreateActiveDetectors provides a mock function with given fields: ctx, detectorID, activeDetectors, timestamp
+func (_m *Repository) CreateActiveDetectors(ctx context.Context, detectorID string, activeDetectors string, timestamp time.Time) error {
+	ret := _m.Called(ctx, detectorID, activeDetectors, timestamp)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string, string, time.Time) error); ok {
-		r0 = rf(detectorID, activeDetectors, timestamp)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, time.Time) error); ok {
+		r0 = rf(ctx, detectorID, activeDetectors, timestamp)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -25,13 +26,13 @@ func (_m *Repository) CreateActiveDetectors(detectorID string, activeDetectors s
 	return r0
 }
 
-// CreateBatteryVoltage provides a mock function with given fields: detectorID, voltage, timestamp
-func (_m *Repository) CreateBatteryVoltage(detectorID string, voltage float64, timestamp time.Time) error {
-	ret := _m.Called(detectorID, voltage, timestamp)
+// CreateBatteryVoltage provides a mock function with given fields: ctx, detectorID, voltage, timestamp
+func (_m *Repository) CreateBatteryVoltage(ctx context.Context, detectorID string, voltage float64, timestamp time.Time) error {
+	ret := _m.Called(ctx, detectorID, voltage, timestamp)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string, float64, time.Time) error); ok {
-		r0 = rf(detectorID, voltage, timestamp)
+	if rf, ok := ret.Get(0).(func(context.Context, string, float64, time.Time) error); ok {
+		r0 = rf(ctx, detectorID, voltage, timestamp)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -39,13 +40,13 @@ func (_m *Repository) CreateBatteryVoltage(detectorID string, voltage float64, t
 	return r0
 }
 
-// CreateCoordinates provides a mock function with given fields: detectorID, latitude, longitude
-func (_m *Repository) CreateCoordinates(detectorID string, latitude types.DecimalDegrees, longitude types.DecimalDegrees) error {
-	ret := _m.Called(detectorID, latitude, longitude)
+// CreateCoordinates provides a mock function with given fields: ctx, detectorID, latitude, longitude
+func (_m *Repository) CreateCoordinates(ctx context.Context, detectorID string, latitude types.DecimalDegrees, longitude types.DecimalDegrees) error {
+	ret := _m.Called(ctx, detectorID, latitude, longitude)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string, types.DecimalDegrees, types.DecimalDegrees) error); ok {
-		r0 = rf(detectorID, latitude, longitude)
+	if rf, ok := ret.Get(0).(func(context.Context, string, types.DecimalDegrees, types.DecimalDegrees) error); ok {
+		r0 = rf(ctx, detectorID, latitude, longitude)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -53,13 +54,13 @@ func (_m *Repository) CreateCoordinates(detectorID string, latitude types.Decima
 	return r0
 }
 
-// CreateDetectionCount provides a mock function with given fields: detectorID, detectorType, count, timestamp
-func (_m *Repository) CreateDetectionCount(detectorID string, detectorType string, count int64, timestamp time.Time) error {
-	ret := _m.Called(detectorID, detectorType, count, timestamp)
+// CreateDetectionCount provides a mock function with given fields: ctx, detectorID, detectorType, count, timestamp
+func (_m *Repository) CreateDetectionCount(ctx context.Context, detectorID string, detectorType string, count int64, timestamp time.Time) error {
+	ret := _m.Called(ctx, detectorID, detectorType, count, timestamp)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string, string, int64, time.Time) error); ok {
-		r0 = rf(detectorID, detectorType, count, timestamp)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, int64, time.Time) error); ok {
+		r0 = rf(ctx, detectorID, detectorType, count, timestamp)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -67,13 +68,27 @@ func (_m *Repository) CreateDetectionCount(detectorID string, detectorType strin
 	return r0
 }
 
-// CreateDetectionEvent provides a mock function with given fields: detectorID, deviceID, timestamp
-func (_m *Repository) CreateDetectionEvent(detectorID string, deviceID string, timestamp time.Time) error {
-	ret := _m.Called(detectorID, deviceID, timestamp)
+// CreateDetectionEvent provides a mock function with given fields: ctx, detectorID, deviceID, timestamp
+func (_m *Repository) CreateDetectionEvent(ctx context.Context, detectorID string, deviceID string, timestamp time.Time) error {
+	ret := _m.Called(ctx, detectorID, deviceID, timestamp)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string, string, time.Time) error); ok {
-		r0 = rf(detectorID, deviceID, timestamp)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, time.Time) error); ok {
+		r0 = rf(ctx, detectorID, deviceID, timestamp)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// CreateDetectorLink provides a mock function with given fields: ctx, destDetectorID, srcDetectorID, maxSeconds
+func (_m *Repository) CreateDetectorLink(ctx context.Context, destDetectorID string, srcDetectorID string, maxSeconds int64) error {
+	ret := _m.Called(ctx, destDetectorID, srcDetectorID, maxSeconds)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, int64) error); ok {
+		r0 = rf(ctx, destDetectorID, srcDetectorID, maxSeconds)
 	} else {
 		r0 = ret.Error(0)
 	}

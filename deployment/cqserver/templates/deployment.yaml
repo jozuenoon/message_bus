@@ -34,9 +34,9 @@ spec:
         command:
           - /server
         args:
-          - --collector_port={{ .Values.CollectorPort }}
-          - --query_port={{ .Values.QueryPort }}
-          - --healthcheck_port={{.Values.HealthCheckPort}}
+          - --collector_port=:{{ .Values.CollectorPort }}
+          - --query_port=:{{ .Values.QueryPort }}
+          - --healthcheck_port=:{{.Values.HealthCheckPort}}
         resources:
           limits:
             cpu: 100m
@@ -54,8 +54,11 @@ spec:
           initialDelaySeconds: 10
         ports:
         - containerPort: {{ .Values.CollectorPort }}
+          name: collector
         - containerPort: {{ .Values.QueryPort}}
+          name: query
         - containerPort: {{ .Values.HealthCheckPort}}
+          name: healthcheck
         imagePullPolicy: {{ .Values.ImagePullPolicy }}
         volumeMounts:
         - name: cqserver-config

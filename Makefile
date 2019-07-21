@@ -9,10 +9,14 @@ GIT_COMMIT := $(shell git rev-parse HEAD 2>/dev/null)
 build_docker: cqserver_docker
 
 cqserver_docker:
-	docker build -f cmd/cq/Dockerfile -t $(DOCKER_REGISTRY)/cqserver:$(GIT_BRANCH)_$(GIT_COMMIT) .
+	docker build -f cmd/cq/Dockerfile -t $(DOCKER_REGISTRY)/cqserver:$(GIT_BRANCH)_$(GIT_COMMIT) -t $(DOCKER_REGISTRY)/cqserver:latest .
+
+test:
+	go test -race ./...
+
 
 # Generators
-all: collector query
+gen: collector query
 
 ## Collector
 collector: collector/collector.pb.go collector/mocks/repository.go

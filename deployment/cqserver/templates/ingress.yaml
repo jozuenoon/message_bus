@@ -9,10 +9,13 @@ metadata:
     component: "{{ .Release.Name }}"
   annotations:
     helm.sh/created: {{ .Release.Time.Seconds | quote }}
+    # Memo for stream timeout configuration: https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/grpc#notes-on-using-responserequest-streams
     kubernetes.io/ingress.class: {{ .Values.IngressClass }}
-    kubernetes.io/ingress.allow-http: "false"
-    ingress.kubernetes.io/service-upstream: "false"
-    nginx.org/proxy-pass-headers:  "Cache-Control"
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    # We get unencrypted traffic inside cluster, to use TLS also internally we need to enable
+    # annotation below + provide TLS configuration into our service accordingly.
+    # nginx.ingress.kubernetes.io/backend-protocol: "GRPCS"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   tls:
   - hosts:
@@ -22,7 +25,11 @@ spec:
   - host: "{{ .Values.FQDN }}"
     http:
       paths:
-      - path: {{ if .Values.PathPrefix }}{{ .Values.PathPrefix }}{{ end }}{{ .Values.BasePath }}
+      - path: /query.QueryService
         backend:
           serviceName: "{{ .Release.Name }}"
-          servicePort: {{ .Values.ServerPort }}
+          servicePort: {{ .Values.QueryPort }}
+      - path: /collector.CollectorService
+        backend:
+          serviceName: "{{ .Release.Name }}"
+          servicePort: {{ .Values.CollectorPort }}

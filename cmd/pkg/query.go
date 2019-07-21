@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func ETCDQueryServiceServer(_ context.Context, g *run.Group, prefix string, port string, endpoints []string, logger log15.Logger) error {
+func ETCDQueryServiceServer(_ context.Context, g *run.Group, prefix, port string, endpoints []string, logger log15.Logger) error {
 	ln, err := net.Listen("tcp", port)
 	if err != nil {
 		return err
@@ -19,7 +19,7 @@ func ETCDQueryServiceServer(_ context.Context, g *run.Group, prefix string, port
 	if err != nil {
 		return err
 	}
-	svc := query.NewQueryService(repo)
+	svc := query.NewQueryService(repo, logger)
 	g.Add(func() error {
 		grpcServer := grpc.NewServer()
 		query.RegisterQueryServiceServer(grpcServer, svc)

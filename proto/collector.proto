@@ -47,10 +47,24 @@ message SendStreamResponse {
   int64 wifi = 4;
 }
 
+message DetectorLink {
+  message SourceDetector {
+    string detector_id = 1;
+    // Maximum travel time from source detector to destination detector that is considered possible.
+    int64 max_seconds = 2;
+  }
+  string dest_detector_id = 1;
+  repeated SourceDetector src_detectors = 2;
+}
+
+
 // CollectorService - provides methods for collecting
 // events from detectors.
 service CollectorService {
   rpc CreateEventLog(EventLog) returns (google.protobuf.Empty);
+
+  // NOTICE: not implemented
+  rpc CreateDetectorLink(DetectorLink) returns (google.protobuf.Empty);
   rpc StreamEventLog(stream EventLog) returns (SendStreamResponse);
   rpc CreateCoordinates(Coordinates) returns (google.protobuf.Empty);
   rpc CreateDetectorStatus(DetectorStatus) returns (google.protobuf.Empty);

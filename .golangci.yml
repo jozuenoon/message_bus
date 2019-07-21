@@ -28,7 +28,7 @@ linters-settings:
   misspell:
     locale: US
   lll:
-    line-length: 140
+    line-length: 170
   goimports:
     local-prefixes: github.com/golangci/golangci-lint
   gocritic:
@@ -43,6 +43,8 @@ linters:
     - maligned
     - prealloc
     - gochecknoglobals
+    - gochecknoinits
+    - dupl
 
 run:
   skip-dirs:

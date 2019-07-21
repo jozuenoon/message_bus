@@ -16,10 +16,9 @@ platform:
   arch: amd64
 
 trigger:
-  ref:
-    include:
-      - refs/heads/master
-      - refs/tags/v*
+  event:
+    exclude:
+    - pull_request
 
 steps:
   # Goreleaser needs at least the last two tags.
@@ -35,7 +34,7 @@ steps:
       CODECOV_TOKEN: { from_secret: CODECOV_TOKEN }
     commands:
       - go build -v ./...
-      - go test -coverpkg=./... -race -covermode=atomic -coverprofile=coverage.txt github.com/jozuenoon/message_bus
+      - go test -coverpkg=./... -race -covermode=atomic -coverprofile=coverage.txt ./...
       - curl -s https://codecov.io/bash | bash
 
   - name: cqserver_docker
@@ -46,6 +45,9 @@ steps:
       auto_tag: true
       username: { from_secret: DOCKER_USERNAME }
       password: { from_secret: DOCKER_PASSWORD }
+    when:
+      event:
+        - tag
 
   - name: release
     image: goreleaser/goreleaser:latest
