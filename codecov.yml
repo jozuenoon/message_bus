@@ -2,6 +2,10 @@ coverage:
   round: nearest
   ignore:
     - "**/*.pb.go"
+    - "**/mocks"
+    - "healthcheck"
+    - "cmd"
+    - "**/etcd.go"
   status:
     project:
       default:
