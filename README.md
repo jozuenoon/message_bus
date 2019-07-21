@@ -17,8 +17,10 @@ and MAC address is hashed before it is passed down through the system.
 Next, system tries to figure out what is current travel time 
 between points based on many such traces.
 
-![Example of detectors placement around city](https://raw.githubusercontent.com/jozuenoon/message_bus/master/example.png)
-
+<figure align="center">
+  <img src="https://raw.githubusercontent.com/jozuenoon/message_bus/master/example.png">
+  <figcaption align="center">Fig.1 - Example detectors distribution on traffic network</figcaption>
+</figure>
 
 ## Message bus
 
