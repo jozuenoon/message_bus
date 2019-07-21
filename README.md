@@ -198,5 +198,5 @@ $ mbcli --collector_host example.com --query_host example.com <other_options>
 - helm chart may provide init containers to check if given backend is alive,
 - implement other service methods of collector and query,
 - design ETCD storage and workers for processing rolling window travel time information from current data,
-- integration tests for ETCD interface,
+- integration tests for ETCD interface - [reference](https://docs.drone.io/user-guide/pipeline/services/),
 - e2e tests,
