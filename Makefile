@@ -14,6 +14,15 @@ cqserver_docker:
 test:
 	go test -race ./...
 
+.PHONY: bin
+bin:
+	go build -o bin/cqserver cmd/cq/main.go
+	go build -o bin/mbcli mbcli/main.go
+
+install:
+	go build -o bin/mbcli mbcli/main.go
+	chmod +x bin/mbcli
+	cp bin/mbcli $$HOME/bin/mbcli
 
 # Generators
 gen: collector query
