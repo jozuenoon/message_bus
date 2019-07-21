@@ -17,10 +17,19 @@ and MAC address is hashed before it is passed down through the system.
 Next, system tries to figure out what is current travel time 
 between points based on many such traces.
 
-<figure align="center">
-  <img src="https://raw.githubusercontent.com/jozuenoon/message_bus/master/example.png">
-  <figcaption align="center">Fig.1 - Example detectors distribution on traffic network</figcaption>
-</figure>
+<p align="center">
+    <figure align="center">
+      <img src="https://raw.githubusercontent.com/jozuenoon/message_bus/master/example.png">
+      <figcaption align="center">Fig.1 - Example detectors distribution on traffic network</figcaption>
+    </figure>
+</p>
+
+## Demo
+
+This screen cast presents basic functionality currently available. Traffic simulator and events retriever.
+
+[![asciicast](https://asciinema.org/a/258460.svg)](https://asciinema.org/a/258460)
+
 
 ## Message bus
 
