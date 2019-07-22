@@ -3,14 +3,14 @@
     "apiVersion": "certmanager.k8s.io/v1alpha1",
     "kind": "Certificate",
     "metadata": {
-        "name": "{{ .Values.FQDN | replace "." "-"}}-tls-cert"
+        "name": "{{ .Values.QueryFQDN | replace "." "-"}}-tls-cert"
     },
     "spec": {
         "acme": {
             "config": [
                 {
                     "domains": [
-                        "{{.Values.FQDN}}"
+                        "{{.Values.QueryFQDN}}"
                     ],
                     "http01": {
                         "ingressClass": "nginx"
@@ -19,13 +19,13 @@
             ]
         },
         "dnsNames": [
-            "{{.Values.FQDN}}"
+            "{{.Values.QueryFQDN}}"
         ],
         "issuerRef": {
             "kind": "ClusterIssuer",
             "name": "http-issuer"
         },
-        "secretName": "{{ .Values.FQDN | replace "." "-"}}-tls-cert"
+        "secretName": "{{ .Values.QueryFQDN | replace "." "-"}}-tls-cert"
     }
 }
 {{- end }}

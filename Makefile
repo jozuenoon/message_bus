@@ -55,11 +55,6 @@ deployment-check: deployment-cqserver-check
 deployment-cqserver-check:
 	helm install deployment/cqserver/ --debug --dry-run
 
-# NOTE
-# With nginx ingress in minikube is now at version 0.23 and have some problems with GRPC request proxying.
-# Upgrading to 0.25 should solve this problem. However to workaround that in minikube we set NodePort service
-# to get everything working instantly, check the node ports:
-# $ kubectl describe svc --namespace tdc message-bus
 deploy-minikube:
 	helm upgrade message-bus \
 	--install \

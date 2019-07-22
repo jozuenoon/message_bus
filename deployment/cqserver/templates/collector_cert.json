@@ -1,0 +1,31 @@
+{{- if .Values.CertManagerEnabled }}
+{
+    "apiVersion": "certmanager.k8s.io/v1alpha1",
+    "kind": "Certificate",
+    "metadata": {
+        "name": "{{ .Values.CollectorFQDN | replace "." "-"}}-tls-cert"
+    },
+    "spec": {
+        "acme": {
+            "config": [
+                {
+                    "domains": [
+                        "{{.Values.CollectorFQDN}}"
+                    ],
+                    "http01": {
+                        "ingressClass": "nginx"
+                    }
+                }
+            ]
+        },
+        "dnsNames": [
+            "{{.Values.CollectorFQDN}}"
+        ],
+        "issuerRef": {
+            "kind": "ClusterIssuer",
+            "name": "http-issuer"
+        },
+        "secretName": "{{ .Values.CollectorFQDN | replace "." "-"}}-tls-cert"
+    }
+}
+{{- end }}

@@ -54,7 +54,9 @@ This section provides some extra technical details.
 ### Architecture
 
 This service in majority follows flattened [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) 
-as described by Uncle Bob. There is nice [example](https://github.com/bxcodec/go-clean-arch) written in Go.
+as described by Uncle Bob. There is nice [example](https://github.com/bxcodec/go-clean-arch) written in Go. However,
+I kept things a bit simpler at this stage since splitting everything into very small packages felt like overkill
+at this stage.
 
 #### Services
 
@@ -106,9 +108,37 @@ to provide TLS certificates for domains. Expected issuer in this case is `http-i
 
 Helm chart is stored under `deployment` directory with subdirectories which are named after corresponding server name.
 
+### Deployment to minikube
+
+To make docker images available we need to attach docker daemon to local terminal session:
+```bash
+eval $(minikube docker-env)
+```
+
+Then in same terminal you need to run:
+```bash
+make build_docker
+```
+Command should populate minikube with docker image attached to current branch and commit.
+
+Deploy by running:
+```bash
+make deploy-etcd-operator
+make deploy-etcd
+make deploy-minikube
+```
+
+Unfortunately nginx-ingress in minikube is now at version 0.23 and have some problems with GRPC request proxying.
+Upgrading to 0.25 should solve this problem. However, to workaround this in minikube we set NodePort service
+to get everything working, check the node ports after deploying:
+```bash
+$ kubectl describe svc --namespace tdc message-bus
+```
+
 ### Local setup
 
-Please use `docker-compose up` then connect with client with defaults.
+Please use `docker-compose up` then connect with client with defaults. Docker compose provides single ETCD server
+running on `2379` and attaches `cqserver` server to `8000` and `9000` port.
 
 ### ETCD repository data model
 
@@ -188,18 +218,21 @@ can be scaled individually.
 
 ## Can I use `eventstore` ?
 
-Yes, if `Repository` interface implementation for `eventstore` can be provided. In general backend assumes
+Yes, if `Repository` interface could be satisfied using `eventstore` capabilities. Backend implementation assumes
 persistent, time sorted, time range queryable storage. In some cases simple key value retrieval is required.
+In case of further development of different storage backend I would recommend moving implementations into common
+`repository` package for consistency.
 
 ## How to access service while it's deployed on kubernetes cluster?
 
-When you get helm chart running in cluster eg. with `cqserver` it provides single endpoint with `FQDN` specified
-in `values.yaml`. Since we run separate services on single pod this way, ingress need to know how to split
-traffic to each port. There are `http` routes provided named after `grpc` services which allow this logic to execute.
+When you get helm chart running in cluster with helm chart it will provide two ingresses with `CollectorFQDN`
+and `QueryFQDN`specified in `values.yaml`. Two separate ingresses are needed in case of usage of common GRPC 
+endpoint related with schema discovery eg. using `grpcurl`. It's possible however to route by paths
+using single ingress but those common services become unavailable.
 
-For client you need to run something like following:
+Run client with following flags specified:
 ```bash
-$ mbcli --collector_host example.com --query_host example.com <other_options>
+$ mbcli --collector_host collector.example.com:9000 --query_host query.example.com:8000 <other_options>
 ```
 
 ## TODO
