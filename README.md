@@ -4,18 +4,18 @@
 [![GolangCI](https://golangci.com/badges/github.com/jozuenoon/message_bus.svg)](https://golangci.com/r/github.com/jozuenoon/message_bus)
 
 
-This repository is part of bigger conceptual system that would
-provide travel time estimations based on mobile devices identification.
+This repository is part of bigger conceptual system that provides travel time estimations based on
+mobile devices identification.
 
 Explanation:
 
-Let's say that we have Bluetooth enabled device in car or with us
-while commuting. While we pass through our regular paths around
-city special detectors grabs MAC address of our device and time
-on witch it got catch. There is great concern taken about privacy
-and MAC address is hashed before it is passed down through the system.
-Next, system tries to figure out what is current travel time 
-between points based on many such traces.
+In general public there is high saturation of Bluetooth devices.
+When BT device pass through paths around city special detectors grabs device MAC address 
+with timestamp. There is great concern taken about privacy and MAC address is hashed before it 
+is passed down through the system. Then system tries to figure out what is current travel time 
+between points based given statistically meaningful amount of data.
+
+NOTE: Given similar in nature ANPR data similar thing could be achieved even with greater accuracy.
 
 <p align="center">
     <figure align="center">
@@ -26,44 +26,43 @@ between points based on many such traces.
 
 ## Demo
 
-This screen cast presents basic functionality currently available. Traffic simulator and events retriever.
+This screencast presents basic functionality currently available: traffic simulator and events retriever.
 
 [![asciicast](https://asciinema.org/a/258460.svg)](https://asciinema.org/a/258460)
 
 
 ## Message bus
 
-Repository provides server for collecting and querying
-events received from mobile devices detectors. Additionally 
-there is client tool for simple traffic flow simulation.
+Repository provides server for collecting and querying events received from mobile devices detectors.
+Additionally there is client tool for simple traffic flow simulation.
 
 ## Bluetooth / WiFi / IMSI detectors aka. detector of mobile devices
 
-Detectors are devices located around city, highways etc. which
-are capable for intercepting Bluetooth, WiFi MAC addresses and
-IMSI ids from passing travelers.
+Detectors are devices located around city, highways etc. capable for intercepting Bluetooth, WiFi, MAC 
+addresses and IMSI ids from passing travelers.
 
 ## NOTE
 
-This service is purely conceptual however I did work with similar
-system which was capable of intercepting Bluetooth MAC addresses.
-Adding IMSI catcher is purely theoretical since they are 
+This service is purely conceptual however, I did work with similar system which was capable of 
+intercepting Bluetooth MAC addresses. Adding IMSI catcher is purely theoretical since they are 
 basically illegal without special permissions.
 
 # Technical details
 
-This section provides some extra technical details about solution.
+This section provides some extra technical details.
 
 ### Architecture
 
-This service in majority follows flattened `Clean Architecture` as described by Uncle Bob.
+This service in majority follows flattened [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) 
+as described by Uncle Bob. There is nice [example](https://github.com/bxcodec/go-clean-arch) written in Go.
 
 #### Services
 
-There are 3 services now available:
+There are 3 services available:
 - collector - responsible for collecting all detector data and any mutable operations,
 - query - responsible for making query type requests,
-- healthcheck - grpc healthcheck used by kubernetes to check pod status, service not implemented yet,
+- *healthcheck - grpc healthcheck used by kubernetes to check POD status. However not doing anything
+meaningful at this stage.
 
 In principle there are components under `cmd` which provide easy way to compose services above into
 servers. Real main function is encapsulated inside `Runner` interface which should be customized
@@ -208,6 +207,5 @@ $ mbcli --collector_host example.com --query_host example.com <other_options>
 - inject versions to binary releases with build time variables,
 - helm chart may provide init containers to check if given backend is alive,
 - implement other service methods of collector and query,
-- design ETCD storage and workers for processing rolling window travel time information from current data,
-- integration tests for ETCD interface - [reference](https://docs.drone.io/user-guide/pipeline/services/),
+- design ETCD storage and workers for processing rolling window travel time information,
 - e2e tests,
