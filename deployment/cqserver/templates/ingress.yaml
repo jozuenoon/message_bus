@@ -1,7 +1,7 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: "{{ .Release.Name }}"
+  name: "{{ .Release.Name }}-collector"
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -15,21 +15,44 @@ metadata:
     # We get unencrypted traffic inside cluster, to use TLS also internally we need to enable
     # annotation below + provide TLS configuration into our service accordingly.
     # nginx.ingress.kubernetes.io/backend-protocol: "GRPCS"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   tls:
   - hosts:
-    - "{{ .Values.FQDN }}"
-    secretName: {{ .Values.FQDN | replace "." "-"}}-tls-cert
+    - "{{ .Values.CollectorFQDN }}"
+    secretName: {{ .Values.CollectorFQDN | replace "." "-"}}-tls-cert
   rules:
-  - host: "{{ .Values.FQDN }}"
+  - host: "{{ .Values.CollectorFQDN }}"
     http:
       paths:
-      - path: /query.QueryService
-        backend:
-          serviceName: "{{ .Release.Name }}"
-          servicePort: {{ .Values.QueryPort }}
-      - path: /collector.CollectorService
+      - path: /
         backend:
           serviceName: "{{ .Release.Name }}"
           servicePort: {{ .Values.CollectorPort }}
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ .Release.Name }}-query"
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}"
+  annotations:
+    helm.sh/created: {{ .Release.Time.Seconds | quote }}
+    kubernetes.io/ingress.class: {{ .Values.IngressClass }}
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+spec:
+  tls:
+  - hosts:
+    - "{{ .Values.QueryFQDN }}"
+    secretName: {{ .Values.QueryFQDN | replace "." "-"}}-tls-cert
+  rules:
+    - host: "{{ .Values.QueryFQDN }}"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: "{{ .Release.Name }}"
+              servicePort: {{ .Values.QueryPort }}

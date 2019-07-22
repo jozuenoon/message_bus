@@ -1,19 +1,25 @@
 Name: "cqserver"
-RepoName: "cqserver"
+RepoName: "message_bus"
 ImageTag: "v0.0.1"
 Registry: "jozuenoon"
 Servers: 2
-HealthCheckPort: 5000
-CollectorPort: 9000
-QueryPort: 8000
 Scheme: "HTTP"
-ImagePullPolicy: "Always"
+ImagePullPolicy: "IfNotPresent"
+
+# Service
+ServiceType: ClusterIP
 
 # Ingress configuration
 IngressClass: "nginx"
-FQDN: "example.com"
+QueryFQDN: "query.message-bus.traffic"
+CollectorFQDN: "collector.message-bus.traffic"
+CertManagerEnabled: false
 
 # Pod disruption budget
 MinAvailable: 1
 
-ETCDEndpoints: ["http://etcd-0:2379", "http://etcd-1:2379", "http://etcd-2:2379"]
+# Configuration
+ETCDEndpoints: "http://etcd-client:2379"
+CollectorPort: 9000
+QueryPort: 8000
+HealthCheckPort: 5000
