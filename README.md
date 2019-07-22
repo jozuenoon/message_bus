@@ -15,7 +15,7 @@ with timestamp. There is great concern taken about privacy and MAC address is ha
 is passed down through the system. Then system tries to figure out what is current travel time 
 between points based given statistically meaningful amount of data.
 
-NOTE: Given similar in nature ANPR data similar thing could be achieved even with greater accuracy.
+NOTE: Given ANPR data similar thing could be achieved even with greater accuracy.
 
 <p align="center">
     <figure align="center">
