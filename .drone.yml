@@ -20,6 +20,23 @@ trigger:
     exclude:
     - pull_request
 
+services:
+  - name: etcd
+    image: quay.io/coreos/etcd:v3.3
+    entrypoint:
+      - /usr/local/bin/etcd
+    command:
+      - '--name=etcd'
+      - '--initial-advertise-peer-urls=http://etcd:2380'
+      - '--listen-peer-urls=http://0.0.0.0:2380'
+      - '--listen-client-urls=http://0.0.0.0:2379'
+      - '--advertise-client-urls=http://etcd:2379'
+      - '--initial-cluster-token=s0m383cretT0k3n'
+      - '--heartbeat-interval=250'
+      - '--election-timeout=1250'
+      - '--initial-cluster=etcd=http://etcd:2380'
+      - '--initial-cluster-state=new'
+
 steps:
   # Goreleaser needs at least the last two tags.
   - name: fetch-tags
@@ -32,9 +49,10 @@ steps:
     environment:
       GO111MODULE: on
       CODECOV_TOKEN: { from_secret: CODECOV_TOKEN }
+      ETCD_ENDPOINTS: "http://etcd:2379"
     commands:
       - go build -v ./...
-      - go test -coverpkg=./... -race -covermode=atomic -coverprofile=coverage.txt ./...
+      - go test -coverpkg=./... -race -covermode=atomic -tags integration -coverprofile=coverage.txt ./...
       - curl -s https://codecov.io/bash | bash
 
   - name: cqserver_docker

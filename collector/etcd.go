@@ -45,7 +45,7 @@ type etcdRepository struct {
 func (r *etcdRepository) CreateDetectionEvent(ctx context.Context, detectorID,
 	deviceID string, timestamp time.Time) error {
 
-	key := eventKey(r.prefix, detectorID, deviceID, timestamp)
+	key := EventKey(r.prefix, detectorID, deviceID, timestamp)
 	value := struct {
 		Timestamp int64
 	}{
@@ -55,13 +55,7 @@ func (r *etcdRepository) CreateDetectionEvent(ctx context.Context, detectorID,
 }
 
 func (r *etcdRepository) CreateDetectorLink(ctx context.Context, destDetectorID, srcDetectorID string, maxSeconds int64) error {
-	key := detectorLinkKey(r.prefix, destDetectorID, srcDetectorID)
-	value := struct {
-		MaxSeconds int64
-	}{
-		MaxSeconds: maxSeconds,
-	}
-	return r.save(ctx, key, value)
+	panic("implement me")
 }
 
 func (r *etcdRepository) CreateActiveDetectors(ctx context.Context, detectorID,
@@ -101,7 +95,7 @@ func detectorLinkKey(namespace, destDetectorID, srcDetectorID string) string {
 	return "/" + path.Join(namespace, ETCDLinkPrefix, destDetectorID, srcDetectorID)
 }
 
-func eventKey(namespace, detectorID, deviceID string, timestamp time.Time) string {
+func EventKey(namespace, detectorID, deviceID string, timestamp time.Time) string {
 	ts := timestamp.Unix()
 	timestamp.UnixNano()
 	timeKey := strconv.FormatInt(ts-ts%100, 10)

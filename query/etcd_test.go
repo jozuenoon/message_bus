@@ -1,10 +1,35 @@
+// +build integration
+
 package query
 
 import (
+	"context"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"os"
 	"reflect"
+	"strings"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
+
+	"github.com/jozuenoon/message_bus/collector"
+
+	"github.com/coreos/etcd/clientv3"
+	"github.com/google/uuid"
+
+	"github.com/inconshreveable/log15"
 )
+
+func init() {
+	if v, ok := os.LookupEnv("ETCD_ENDPOINTS"); ok {
+		etcdEndpoints = strings.Split(v, ",")
+	}
+}
+
+var etcdEndpoints = []string{"http://etcd:2379"}
 
 func Test_keys(t *testing.T) {
 	tests := []struct {
@@ -23,7 +48,7 @@ func Test_keys(t *testing.T) {
 	for _, test := range tests {
 		tt := test
 		t.Run(tt.name, func(t *testing.T) {
-			if got := keys(tt.namespace, tt.detectors); !reflect.DeepEqual(got, tt.want) {
+			if got := etcdEventKeys(tt.namespace, tt.detectors); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("keys() = %v, want %v", got, tt.want)
 			}
 		})
@@ -81,5 +106,84 @@ func Test_eventValue(t *testing.T) {
 				t.Errorf("eventValue() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+type tval struct {
+	Timestamp int64
+}
+
+func Test_etcdRepository_GetEvents(t *testing.T) {
+	prefix := "/integration_tests"
+	repo, err := NewEtcdRepository(prefix, etcdEndpoints, log15.New())
+	if err != nil {
+		t.Fatalf("failed to create etcd repository: %v", err)
+	}
+	r := repo.(*etcdRepository)
+	tests := []struct {
+		name      string
+		seed      string
+		detectors []string
+		after     time.Time
+		before    time.Time
+		limit     int64
+		want      []*Event
+		wantErr   bool
+	}{
+		{
+			name:      "basic",
+			seed:      uuid.New().String(),
+			detectors: []string{"xxx-1"},
+			limit:     100,
+			want: []*Event{
+				{
+					DetectorID: "xxx-1",
+					DeviceID:   "ddd-1",
+					Time:       time.Unix(0, 3000),
+				},
+				{
+					DetectorID: "xxx-1",
+					DeviceID:   "ddd-2",
+					Time:       time.Unix(0, 2000),
+				},
+				{
+					DetectorID: "xxx-1",
+					DeviceID:   "ddd-3",
+					Time:       time.Unix(0, 1000),
+				},
+			},
+		},
+	}
+	for _, test := range tests {
+		tt := test
+		t.Run(tt.name, func(t *testing.T) {
+			fmt.Println(tt.seed)
+			r.prefix = tt.seed
+			for _, ev := range tt.want {
+				putETCDEvent(t, tt.seed, ev.DetectorID, ev.DeviceID, ev.Time, r.cli)
+			}
+			got, err := r.GetEvents(context.Background(), tt.detectors, tt.after, tt.before, tt.limit)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("etcdRepository.GetEvents() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			assert.ElementsMatch(t, got, tt.want)
+		})
+	}
+}
+
+func putETCDEvent(t *testing.T, namespace, detectorID, deviceID string, ts time.Time, cli *clientv3.Client) {
+	t.Helper()
+	key := collector.EventKey(namespace, detectorID, deviceID, ts)
+	bval, err := json.Marshal(tval{
+		Timestamp: ts.UnixNano(),
+	})
+	if err != nil {
+		t.Fatalf("failed to marshal json")
+	}
+	val := base64.StdEncoding.EncodeToString(bval)
+	_, err = cli.Put(context.Background(), key, val)
+	if err != nil {
+		t.Fatalf("failed to check key: %v", err)
 	}
 }

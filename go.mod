@@ -5,6 +5,8 @@ go 1.12
 require (
 	github.com/coreos/etcd v3.3.13+incompatible
 	github.com/golang/protobuf v1.3.2
+	github.com/google/go-cmp v0.2.0
+	github.com/google/uuid v1.1.1
 	github.com/inconshreveable/log15 v0.0.0-20180818164646-67afb5ed74ec
 	github.com/mattn/go-colorable v0.1.2 // indirect
 	github.com/mattn/go-runewidth v0.0.4 // indirect
